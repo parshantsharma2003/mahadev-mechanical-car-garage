@@ -1,0 +1,154 @@
+/* ==========================================================================
+   CTA BANNER - MOBILE-FIRST STYLES
+   Horizontal layout with calendar icon and Book Now button on mobile
+   ========================================================================== */
+
+.cta-banner-section {
+  padding-top: 0.5rem;
+  padding-bottom: 2.75rem;
+}
+
+@media (min-width: 768px) {
+  .cta-banner-section {
+    padding-top: 1rem;
+    padding-bottom: 4.5rem;
+  }
+}
+
+.cta-card {
+  background: linear-gradient(135deg, #FFF1F2 0%, #FEE2E2 100%);
+  border: 1.5px solid rgba(220, 38, 38, 0.18);
+  border-radius: var(--radius-lg);
+  padding: 1.125rem 1rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  box-shadow: 0 4px 18px rgba(220, 38, 38, 0.08);
+}
+
+@media (min-width: 640px) {
+  .cta-card {
+    border-radius: var(--radius-xl);
+    padding: 1.75rem 2rem;
+    gap: 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .cta-card {
+    padding: 2.25rem 2.5rem;
+  }
+}
+
+.cta-card-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 0;
+}
+
+@media (min-width: 640px) {
+  .cta-card-left {
+    gap: 1.25rem;
+  }
+}
+
+.cta-calendar-box {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background-color: #FFFFFF;
+  border: 1.5px solid rgba(220, 38, 38, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 3px 8px rgba(220, 38, 38, 0.12);
+}
+
+@media (min-width: 640px) {
+  .cta-calendar-box {
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius-lg);
+  }
+}
+
+.cta-calendar-icon {
+  color: #DC2626;
+  width: 22px;
+  height: 22px;
+}
+
+@media (min-width: 640px) {
+  .cta-calendar-icon {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+.cta-text-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.cta-card-title {
+  font-size: 0.875rem;
+  font-weight: 800;
+  color: #111827;
+  line-height: 1.25;
+}
+
+@media (min-width: 480px) {
+  .cta-card-title {
+    font-size: 1.05rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .cta-card-title {
+    font-size: 1.5rem;
+  }
+}
+
+.cta-card-desc {
+  font-size: 0.7rem;
+  color: #4B5563;
+  line-height: 1.3;
+}
+
+@media (min-width: 480px) {
+  .cta-card-desc {
+    font-size: 0.8125rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .cta-card-desc {
+    font-size: 0.9375rem;
+  }
+}
+
+.cta-card-right {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.cta-action-btn {
+  padding: 0.65rem 1rem;
+  font-size: 0.8125rem;
+  white-space: nowrap;
+}
+
+@media (min-width: 640px) {
+  .cta-action-btn {
+    padding: 0.875rem 1.75rem;
+    font-size: 1rem;
+  }
+}

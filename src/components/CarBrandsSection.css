@@ -1,0 +1,352 @@
+/* ==========================================================================
+   CAR BRANDS WE SERVICE - FULLY RESPONSIVE (MOBILE PHONE & LAPTOP)
+   Equally sized brand logos, continuous smooth auto-scroll & touch swipe
+   ========================================================================== */
+
+.car-brands-section {
+  padding-top: 1.5rem;
+  padding-bottom: 3.5rem;
+  background-color: #FFFFFF;
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid #F1F5F9;
+  border-bottom: 1px solid #F1F5F9;
+}
+
+@media (min-width: 768px) {
+  .car-brands-section {
+    padding-top: 2.5rem;
+    padding-bottom: 4.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .car-brands-section {
+    padding-top: 3.25rem;
+    padding-bottom: 5.5rem;
+  }
+}
+
+/* ---------------- HEADER BLOCK ---------------- */
+.brands-header-row {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.75rem;
+}
+
+@media (min-width: 768px) {
+  .brands-header-row {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-bottom: 2.25rem;
+  }
+}
+
+.brands-title-col {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 768px) {
+  .brands-title-col {
+    max-width: 55%;
+  }
+}
+
+.brands-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+}
+
+.eyebrow-dash {
+  width: 22px;
+  height: 4px;
+  background: #DC2626;
+  border-radius: var(--radius-full);
+}
+
+@media (min-width: 768px) {
+  .eyebrow-dash {
+    width: 28px;
+  }
+}
+
+.eyebrow-text {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #DC2626;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@media (min-width: 768px) {
+  .eyebrow-text {
+    font-size: 0.8125rem;
+  }
+}
+
+.brands-heading {
+  font-family: var(--font-heading);
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: #0F172A;
+  line-height: 1.18;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+@media (min-width: 480px) {
+  .brands-heading {
+    font-size: 1.75rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .brands-heading {
+    font-size: 2.15rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .brands-heading {
+    font-size: 2.45rem;
+  }
+}
+
+/* Right Column (Description) */
+.brands-right-col {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 768px) {
+  .brands-right-col {
+    max-width: 440px;
+    text-align: right;
+  }
+}
+
+.brands-description {
+  font-size: 0.825rem;
+  color: #64748B;
+  line-height: 1.5;
+  margin: 0;
+}
+
+@media (min-width: 640px) {
+  .brands-description {
+    font-size: 0.875rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .brands-description {
+    font-size: 0.9375rem;
+  }
+}
+
+/* ---------------- CAROUSEL CONTAINER & TRACK ---------------- */
+.brands-carousel-container {
+  position: relative;
+  overflow: hidden;
+  padding: 0.25rem 0 0.5rem;
+  /* Intrinsic height guarantees 0 vertical layout shift on slide changes */
+  min-height: 140px;
+}
+
+@media (min-width: 640px) {
+  .brands-carousel-container {
+    min-height: 154px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .brands-carousel-container {
+    min-height: 168px;
+  }
+}
+
+.brands-carousel-track {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  scroll-behavior: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+  user-select: none;
+  cursor: grab;
+  padding: 0.5rem 0.25rem 0.85rem;
+}
+
+.brands-carousel-track:active {
+  cursor: grabbing;
+}
+
+.brands-carousel-track::-webkit-scrollbar {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .brands-carousel-track {
+    gap: 1rem;
+    padding: 0.6rem 0.35rem 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .brands-carousel-track {
+    gap: 1.15rem;
+    padding: 0.75rem 0.35rem 1.25rem;
+  }
+}
+
+/* ---------------- COMPACT BRAND CARDS ---------------- */
+.brand-card {
+  flex: 0 0 102px;
+  width: 102px;
+  height: 116px;
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 0.35rem 0.65rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.22s ease;
+  cursor: pointer;
+  will-change: transform;
+}
+
+@media (min-width: 640px) {
+  .brand-card {
+    flex: 0 0 114px;
+    width: 114px;
+    height: 126px;
+    padding: 0.85rem 0.5rem 0.75rem;
+    border-radius: var(--radius-lg);
+  }
+}
+
+@media (min-width: 1024px) {
+  .brand-card {
+    flex: 0 0 120px;
+    width: 120px;
+    height: 132px;
+    padding: 1rem 0.65rem 0.85rem;
+  }
+}
+
+.brand-card:hover {
+  transform: translateY(-4px);
+  border-color: #CBD5E1;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.car-brand-logo-frame {
+  width: 54px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.45rem;
+}
+
+@media (min-width: 640px) {
+  .car-brand-logo-frame {
+    width: 60px;
+    height: 46px;
+    margin-bottom: 0.55rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .car-brand-logo-frame {
+    width: 66px;
+    height: 50px;
+  }
+}
+
+.car-brand-logo-img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  pointer-events: none;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.04));
+  transition: transform var(--transition-fast);
+}
+
+.brand-card:hover .car-brand-logo-img {
+  transform: scale(1.06);
+}
+
+.brand-name-label {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #1E293B;
+  text-align: center;
+  line-height: 1.25;
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@media (min-width: 640px) {
+  .brand-name-label {
+    font-size: 0.8rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .brand-name-label {
+    font-size: 0.825rem;
+  }
+}
+
+/* ---------------- BOTTOM PROGRESS BAR INDICATOR ---------------- */
+.brands-indicator-track {
+  width: 120px;
+  height: 4px;
+  background: #FEE2E2;
+  border-radius: var(--radius-full);
+  margin: 1.25rem auto 0;
+  position: relative;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .brands-indicator-track {
+    width: 160px;
+    margin-top: 1.5rem;
+  }
+}
+
+.brands-indicator-thumb {
+  width: 28px;
+  height: 4px;
+  background: #DC2626;
+  border-radius: var(--radius-full);
+  transition: transform 0.08s linear;
+  will-change: transform;
+}
+
+@media (min-width: 768px) {
+  .brands-indicator-thumb {
+    width: 36px;
+  }
+}

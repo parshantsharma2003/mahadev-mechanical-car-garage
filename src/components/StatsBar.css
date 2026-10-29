@@ -1,0 +1,140 @@
+/* ==========================================================================
+   STATS BAR - MOBILE-FIRST STYLES
+   Matches the 4-column horizontal metrics bar on mobile
+   ========================================================================== */
+
+.stats-bar-wrapper {
+  position: relative;
+  z-index: 10;
+  margin-top: -2rem;
+  padding-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+  .stats-bar-wrapper {
+    margin-top: -3rem;
+    padding-bottom: 3.5rem;
+  }
+}
+
+.stats-card {
+  background-color: #FFFFFF;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  padding: 1.125rem 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .stats-card {
+    border-radius: var(--radius-xl);
+    padding: 1.5rem 1.5rem;
+  }
+}
+
+/* Mobile-First: 4 columns side-by-side matching the screenshot */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.35rem;
+  align-items: start;
+}
+
+@media (min-width: 640px) {
+  .stats-grid {
+    gap: 1.25rem;
+  }
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.35rem;
+  padding: 0 0.2rem;
+  position: relative;
+}
+
+@media (min-width: 768px) {
+  .stat-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 15%;
+    height: 70%;
+    width: 1px;
+    background-color: var(--color-border);
+  }
+}
+
+.stat-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #DC2626;
+  margin-bottom: 0.15rem;
+}
+
+.stat-icon-red {
+  color: #DC2626;
+  width: 22px;
+  height: 22px;
+}
+
+@media (min-width: 768px) {
+  .stat-icon-red {
+    width: 26px;
+    height: 26px;
+  }
+}
+
+.stat-text-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-value {
+  font-family: var(--font-heading);
+  font-size: 0.9375rem;
+  font-weight: 800;
+  color: #111827;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+
+@media (min-width: 480px) {
+  .stat-value {
+    font-size: 1.15rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .stat-value {
+    font-size: 1.5rem;
+  }
+}
+
+.stat-label {
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: #4B5563;
+  line-height: 1.2;
+  margin-top: 0.15rem;
+  max-width: 80px;
+}
+
+@media (min-width: 480px) {
+  .stat-label {
+    font-size: 0.75rem;
+    max-width: 120px;
+  }
+}
+
+@media (min-width: 768px) {
+  .stat-label {
+    font-size: 0.8125rem;
+    max-width: none;
+  }
+}

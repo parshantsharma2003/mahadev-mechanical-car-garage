@@ -1,0 +1,509 @@
+/* ==========================================================================
+   CONNECT WITH US SECTION - FOLLOW US FOR UPDATES & OFFERS
+   Matches Reference Screenshot: Centered Eyebrow, Red Highlight, 5 Channels
+   Desktop (>=768px): Static, Executive Centered Row of 5 Channels
+   Mobile (<768px): Seamless Continuous Auto-Scrolling Marquee + Touch Swipe
+   Icons: Dynamic "Alive" Micro-Animations & Brand Color Interactions
+   ========================================================================== */
+
+.connect-section {
+  padding-top: 2rem;
+  padding-bottom: 3.5rem;
+  background-color: #FFFFFF;
+  position: relative;
+  overflow: hidden;
+  scroll-margin-top: 90px;
+}
+
+@media (min-width: 768px) {
+  .connect-section {
+    padding-top: 2.75rem;
+    padding-bottom: 4.75rem;
+  }
+}
+
+/* ---------------- EYEBROW WITH FLANKING RED LINES ---------------- */
+.connect-eyebrow-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 0.65rem;
+}
+
+.connect-eyebrow-line {
+  width: 26px;
+  height: 3.5px;
+  background: #DC2626;
+  border-radius: var(--radius-full);
+}
+
+@media (min-width: 768px) {
+  .connect-eyebrow-line {
+    width: 36px;
+    height: 4px;
+  }
+}
+
+.connect-eyebrow-text {
+  font-family: var(--font-heading);
+  font-size: 0.78125rem;
+  font-weight: 800;
+  color: #DC2626;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@media (min-width: 768px) {
+  .connect-eyebrow-text {
+    font-size: 0.875rem;
+  }
+}
+
+/* ---------------- HEADING ---------------- */
+.connect-heading {
+  text-align: center;
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0F172A;
+  line-height: 1.22;
+  letter-spacing: -0.02em;
+  margin: 0 0 1.65rem 0;
+}
+
+@media (min-width: 480px) {
+  .connect-heading {
+    font-size: 1.85rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .connect-heading {
+    font-size: 2.35rem;
+    margin-bottom: 2.35rem;
+  }
+}
+
+.text-highlight-red {
+  color: #DC2626;
+}
+
+/* ---------------- MAIN WHITE CARD ---------------- */
+.connect-card {
+  background: #FFFFFF;
+  border-radius: 20px;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 6px 24px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0.75rem 0.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .connect-card {
+    border-radius: 26px;
+    padding: 1.15rem 1.85rem;
+    overflow: visible;
+  }
+}
+
+/* ---------------- CHANNELS ROW ---------------- */
+.connect-channels-row {
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: auto; /* Required for continuous linear JS rAF scroll */
+  gap: 0.35rem;
+  padding: 0.35rem 0.25rem;
+  user-select: none;
+  cursor: grab;
+  touch-action: pan-x;
+}
+
+.connect-channels-row::-webkit-scrollbar {
+  display: none;
+}
+
+.connect-channels-row:active {
+  cursor: grabbing;
+}
+
+/* ---------------- MOBILE PHONE VIEW (< 768px) ---------------- */
+@media (max-width: 767px) {
+  .connect-card {
+    /* Soft gradient fade mask on left and right edges for marquee aesthetic */
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000000 16px, #000000 calc(100% - 16px), transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0, #000000 16px, #000000 calc(100% - 16px), transparent 100%);
+  }
+
+  .connect-channel-item {
+    padding: 0.45rem 0.7rem;
+    gap: 0.55rem;
+  }
+
+  .connect-divider {
+    height: 24px;
+    margin: 0 0.15rem;
+  }
+}
+
+/* ---------------- LAPTOP VIEW (>= 768px) ---------------- */
+/* STRICT RULE: NO scrolling on laptop view! Exactly 5 static, centered items. */
+@media (min-width: 768px) {
+  .channel-duplicate,
+  .divider-duplicate,
+  .divider-set-end {
+    display: none !important;
+  }
+
+  .connect-channels-row {
+    justify-content: space-between;
+    overflow-x: visible;
+    overflow-y: visible;
+    gap: 0;
+    padding: 0.25rem 0;
+    cursor: default;
+  }
+
+  .connect-channels-row:active {
+    cursor: default;
+  }
+}
+
+/* ---------------- CHANNEL ITEM ---------------- */
+.connect-channel-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 0.85rem;
+  border-radius: 14px;
+  text-decoration: none;
+  transition: background-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (min-width: 768px) {
+  .connect-channel-item {
+    padding: 0.65rem 1.15rem;
+    gap: 0.75rem;
+  }
+}
+
+.connect-channel-item:hover {
+  background-color: #F8FAFC;
+  transform: translateY(-2px);
+}
+
+.connect-channel-item:active {
+  transform: scale(0.96);
+}
+
+.connect-icon-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform var(--transition-fast);
+}
+
+.connect-channel-item:hover .connect-icon-box {
+  transform: scale(1.12);
+}
+
+.connect-channel-icon {
+  width: 28px;
+  height: 28px;
+  display: block;
+  transform-origin: center center;
+}
+
+@media (min-width: 768px) {
+  .connect-channel-icon {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+.connect-channel-name {
+  font-family: var(--font-heading);
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #1E293B;
+  white-space: nowrap;
+  letter-spacing: -0.01em;
+  transition: color var(--transition-fast);
+}
+
+@media (min-width: 768px) {
+  .connect-channel-name {
+    font-size: 0.975rem;
+  }
+}
+
+/* ---------------- VERTICAL DIVIDER ---------------- */
+.connect-divider {
+  width: 1px;
+  height: 26px;
+  background-color: #E2E8F0;
+  flex-shrink: 0;
+  margin: 0 0.15rem;
+}
+
+@media (min-width: 768px) {
+  .connect-divider {
+    height: 34px;
+    margin: 0;
+  }
+}
+
+/* ==========================================================================
+   ALIVE ICON MICRO-ANIMATIONS (60fps GPU-Accelerated)
+   Pulsing, Breathing Lens, Handset Alert Ring, GPS Pin Bobbing, Vibrant Auras
+   ========================================================================== */
+
+/* 1. YOUTUBE ALIVE ANIMATION */
+@keyframes ytBadgePulse {
+  0%, 100% {
+    filter: drop-shadow(0 2px 5px rgba(255, 0, 0, 0.25));
+    transform: scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 4px 10px rgba(255, 0, 0, 0.5));
+    transform: scale(1.04);
+  }
+}
+
+@keyframes ytPlayThrob {
+  0%, 100% {
+    transform: scale(1) translateX(0);
+    opacity: 0.95;
+  }
+  50% {
+    transform: scale(1.14) translateX(0.6px);
+    opacity: 1;
+  }
+}
+
+.channel-youtube .connect-channel-icon {
+  animation: ytBadgePulse 2.8s ease-in-out infinite;
+}
+
+.channel-youtube .yt-play {
+  transform-origin: 16px 16px;
+  animation: ytPlayThrob 2.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.channel-youtube:hover .connect-channel-name {
+  color: #FF0000;
+}
+
+.channel-youtube:hover .connect-channel-icon {
+  filter: drop-shadow(0 5px 14px rgba(255, 0, 0, 0.65));
+}
+
+/* 2. INSTAGRAM ALIVE ANIMATION */
+@keyframes igAuraPulse {
+  0%, 100% {
+    filter: drop-shadow(0 2px 6px rgba(200, 55, 171, 0.28));
+    transform: scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 5px 12px rgba(225, 48, 108, 0.55));
+    transform: scale(1.04);
+  }
+}
+
+@keyframes igLensPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.18);
+  }
+}
+
+@keyframes igFlashTwinkle {
+  0%, 100% {
+    opacity: 0.85;
+    transform: scale(1);
+  }
+  45% {
+    opacity: 0.4;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.3);
+  }
+  55% {
+    opacity: 0.7;
+    transform: scale(0.95);
+  }
+}
+
+.channel-instagram .connect-channel-icon {
+  animation: igAuraPulse 3s ease-in-out infinite;
+}
+
+.channel-instagram .ig-lens-inner {
+  transform-origin: 16px 16px;
+  animation: igLensPulse 2.8s ease-in-out infinite;
+}
+
+.channel-instagram .ig-flash {
+  transform-origin: 21.2px 10.8px;
+  animation: igFlashTwinkle 3.2s ease-in-out infinite;
+}
+
+.channel-instagram:hover .connect-channel-name {
+  color: #E1306C;
+}
+
+.channel-instagram:hover .connect-channel-icon {
+  filter: drop-shadow(0 5px 14px rgba(225, 48, 108, 0.65));
+}
+
+/* 3. FACEBOOK ALIVE ANIMATION */
+@keyframes fbFloatAura {
+  0%, 100% {
+    filter: drop-shadow(0 2px 5px rgba(24, 119, 242, 0.25));
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 5px 12px rgba(24, 119, 242, 0.5));
+    transform: translateY(-2px) scale(1.04);
+  }
+}
+
+@keyframes fbLetterWave {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.06);
+  }
+}
+
+.channel-facebook .connect-channel-icon {
+  animation: fbFloatAura 3s ease-in-out infinite;
+}
+
+.channel-facebook .fb-letter {
+  transform-origin: 16px 16px;
+  animation: fbLetterWave 3s ease-in-out infinite;
+}
+
+.channel-facebook:hover .connect-channel-name {
+  color: #1877F2;
+}
+
+.channel-facebook:hover .connect-channel-icon {
+  filter: drop-shadow(0 5px 14px rgba(24, 119, 242, 0.65));
+}
+
+/* 4. WHATSAPP ALIVE ANIMATION */
+@keyframes waBubbleAura {
+  0%, 100% {
+    filter: drop-shadow(0 2px 5px rgba(37, 211, 102, 0.28));
+    transform: scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 4px 11px rgba(37, 211, 102, 0.55));
+    transform: scale(1.04);
+  }
+}
+
+@keyframes waPhoneRing {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  8% {
+    transform: rotate(-13deg);
+  }
+  16% {
+    transform: rotate(13deg);
+  }
+  24% {
+    transform: rotate(-9deg);
+  }
+  32% {
+    transform: rotate(9deg);
+  }
+  40% {
+    transform: rotate(0deg);
+  }
+}
+
+.channel-whatsapp .connect-channel-icon {
+  animation: waBubbleAura 2.8s ease-in-out infinite;
+}
+
+.channel-whatsapp .wa-phone {
+  transform-origin: 16px 16px;
+  animation: waPhoneRing 3.2s ease-in-out infinite;
+}
+
+.channel-whatsapp:hover .connect-channel-name {
+  color: #16A34A;
+}
+
+.channel-whatsapp:hover .connect-channel-icon {
+  filter: drop-shadow(0 5px 14px rgba(37, 211, 102, 0.65));
+}
+
+/* 5. GOOGLE MAPS ALIVE ANIMATION */
+@keyframes gmapsPinBob {
+  0%, 100% {
+    filter: drop-shadow(0 2px 4px rgba(234, 67, 53, 0.25));
+    transform: translateY(0);
+  }
+  30% {
+    filter: drop-shadow(0 6px 10px rgba(234, 67, 53, 0.45));
+    transform: translateY(-3.5px);
+  }
+  50% {
+    filter: drop-shadow(0 3px 6px rgba(234, 67, 53, 0.3));
+    transform: translateY(-0.8px);
+  }
+  70% {
+    filter: drop-shadow(0 5px 9px rgba(234, 67, 53, 0.4));
+    transform: translateY(-2px);
+  }
+}
+
+.channel-google-maps .gmaps-icon-svg {
+  animation: gmapsPinBob 2.5s ease-in-out infinite;
+}
+
+.channel-google-maps:hover .connect-channel-name {
+  color: #EA4335;
+}
+
+.channel-google-maps:hover .gmaps-icon-svg {
+  filter: drop-shadow(0 6px 14px rgba(234, 67, 53, 0.65));
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .channel-youtube .connect-channel-icon,
+  .channel-youtube .yt-play,
+  .channel-instagram .connect-channel-icon,
+  .channel-instagram .ig-lens-inner,
+  .channel-instagram .ig-flash,
+  .channel-facebook .connect-channel-icon,
+  .channel-facebook .fb-letter,
+  .channel-whatsapp .connect-channel-icon,
+  .channel-whatsapp .wa-phone,
+  .channel-google-maps .gmaps-icon-svg {
+    animation: none !important;
+  }
+}
