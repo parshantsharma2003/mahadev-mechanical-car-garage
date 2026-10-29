@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Phone, Menu, X, Calendar, MapPin, ChevronRight, ShieldCheck } from 'lucide-react';
+import { Phone, Menu, X, Calendar, MapPin, ChevronRight } from 'lucide-react';
 import { useGarage } from '../context/GarageContext';
 import './Navbar.css';
 
@@ -122,17 +122,6 @@ export default function Navbar({ onOpenBooking }) {
                   <ChevronRight size={18} className="drawer-arrow" />
                 </a>
               ))}
-              <a 
-                href="#admin" 
-                className="drawer-nav-item drawer-admin-item" 
-                onClick={handleLinkClick}
-              >
-                <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#DC2626' }}>
-                  <ShieldCheck size={18} />
-                  <strong>Admin Control Portal</strong>
-                </span>
-                <ChevronRight size={18} className="drawer-arrow" />
-              </a>
             </nav>
 
             <div className="drawer-contact-card">

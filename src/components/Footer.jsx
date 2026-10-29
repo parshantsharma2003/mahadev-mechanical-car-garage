@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapPin, Phone, MessageCircle, Clock, ShieldCheck, ChevronRight, Lock } from 'lucide-react';
+import { MapPin, Phone, MessageCircle, Clock, ShieldCheck, ChevronRight } from 'lucide-react';
 import { useGarage } from '../context/GarageContext';
 import './Footer.css';
 
@@ -140,11 +140,6 @@ export default function Footer({ onOpenBooking }) {
           </p>
           <div className="footer-bottom-tags">
             <span>Rohtak - Panipat Rd, Gohana, Haryana</span>
-            <span>•</span>
-            <a href="#admin" className="footer-admin-link">
-              <Lock size={12} />
-              <span>Admin Portal</span>
-            </a>
           </div>
         </div>
       </div>

@@ -31,12 +31,6 @@ export default function AdminLogin({ onBackToSite }) {
     }, 400);
   };
 
-  const fillDemoCredentials = () => {
-    setEmail('admin@mahadevgarage.com');
-    setPassword('mahadev@2026');
-    setErrorMsg('');
-  };
-
   return (
     <div className="admin-login-wrapper">
       <div className="login-bg-glow"></div>
@@ -119,18 +113,6 @@ export default function AdminLogin({ onBackToSite }) {
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
-          </div>
-
-          {/* Quick Demo Pill */}
-          <div className="demo-credentials-box">
-            <span className="demo-hint-text">Default master access:</span>
-            <button 
-              type="button" 
-              className="autofill-btn"
-              onClick={fillDemoCredentials}
-            >
-              Autofill Credentials (mahadev@2026)
-            </button>
           </div>
 
           <button 

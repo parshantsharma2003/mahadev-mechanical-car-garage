@@ -17,33 +17,48 @@ import VideoModal from './components/VideoModal';
 import AdminLogin from './components/admin/AdminLogin';
 import AdminDashboard from './components/admin/AdminDashboard';
 
+const isAdminRoute = () => {
+  const hash = (window.location.hash || '').toLowerCase();
+  const path = (window.location.pathname || '').toLowerCase().replace(/\/$/, '');
+  return hash === '#admin' || path === '/admin';
+};
+
 function GarageWebsiteApp() {
   const { isAdminLoggedIn } = useGarage();
   const [currentView, setCurrentView] = useState(() => {
-    return window.location.hash === '#admin' ? 'admin' : 'site';
+    return isAdminRoute() ? 'admin' : 'site';
   });
 
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
   const [isVideoOpen, setIsVideoOpen] = useState(false);
 
-  // Synchronize hash routing with view state
+  // Synchronize URL routing (both /admin and #admin) with view state
   useEffect(() => {
-    const handleHashChange = () => {
-      if (window.location.hash === '#admin') {
+    const checkRoute = () => {
+      if (isAdminRoute()) {
         setCurrentView('admin');
         window.scrollTo(0, 0);
-      } else if (currentView === 'admin' && window.location.hash !== '#admin') {
+      } else if (currentView === 'admin' && !isAdminRoute()) {
         setCurrentView('site');
       }
     };
 
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
+    window.addEventListener('hashchange', checkRoute);
+    window.addEventListener('popstate', checkRoute);
+    return () => {
+      window.removeEventListener('hashchange', checkRoute);
+      window.removeEventListener('popstate', checkRoute);
+    };
   }, [currentView]);
 
   const handleBackToSite = () => {
-    window.location.hash = '';
+    if (window.location.hash.toLowerCase() === '#admin') {
+      window.location.hash = '';
+    }
+    if (window.location.pathname.toLowerCase().replace(/\/$/, '') === '/admin') {
+      window.history.pushState(null, '', '/');
+    }
     setCurrentView('site');
     window.scrollTo(0, 0);
   };
