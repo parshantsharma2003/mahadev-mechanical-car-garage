@@ -26,6 +26,14 @@ dist-ssr
 # Vercel
 .vercel
 
+# Environment variables
+.env
+.env.*
+!.env.example
+server/.env
+server/.env.*
+!server/.env.example
+
 # Temporary / backup files
 *.bak
 test-*.js

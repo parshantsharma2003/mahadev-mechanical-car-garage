@@ -257,7 +257,7 @@ export default function ServicesSection({ onSelectService }) {
           </div>
           <button 
             className="banner-enquire-link"
-            onClick={() => onSelectService({ title: "Custom Inspection & Diagnostics" })}
+            onClick={() => onSelectService({ title: "Custom Inspection & Diagnostics", mode: "enquiry" })}
           >
             Ask Our Mechanics ➔
           </button>

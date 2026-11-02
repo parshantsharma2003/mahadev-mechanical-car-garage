@@ -1,11 +1,16 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { garageData as defaultGarageData } from '../config/garageData';
 
+import { 
+  adminLogin as apiAdminLogin, 
+  adminGetMe as apiAdminGetMe, 
+  adminLogout as apiAdminLogout 
+} from '../utils/api';
+
 const GarageContext = createContext(null);
 
 const STORAGE_KEY_DATA = 'mahadev_garage_data_v2';
 const STORAGE_KEY_BOOKINGS = 'mahadev_garage_bookings_v2';
-const STORAGE_KEY_AUTH = 'mahadev_garage_admin_auth_v2';
 
 // Initial sample bookings
 const DEFAULT_BOOKINGS = [
@@ -133,15 +138,37 @@ export function GarageProvider({ children }) {
     return DEFAULT_BOOKINGS;
   });
 
-  // 3. Admin Authentication State
-  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY_AUTH);
-      return saved === 'true';
-    } catch {
-      return false;
+  // 3. Admin Authentication State (Real HTTP-only Cookie JWT + Session restore via /auth/me)
+  const [adminUser, setAdminUser] = useState(null);
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
+  const [isLoadingAuth, setIsLoadingAuth] = useState(true);
+
+  // Restore authenticated session on mount using /api/v1/auth/me
+  useEffect(() => {
+    let isMounted = true;
+    async function restoreSession() {
+      try {
+        const user = await apiAdminGetMe();
+        if (isMounted && user) {
+          setAdminUser(user);
+          setIsAdminLoggedIn(true);
+        }
+      } catch {
+        if (isMounted) {
+          setAdminUser(null);
+          setIsAdminLoggedIn(false);
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoadingAuth(false);
+        }
+      }
     }
-  });
+    restoreSession();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // Persist Data on change
   useEffect(() => {
@@ -161,30 +188,33 @@ export function GarageProvider({ children }) {
     }
   }, [bookings]);
 
-  // Persist Auth on change
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY_AUTH, isAdminLoggedIn ? 'true' : 'false');
-    } catch (e) {
-      console.error('Error saving auth to localStorage', e);
-    }
-  }, [isAdminLoggedIn]);
-
   // ---------------- AUTH METHODS ----------------
-  const adminLogin = (email, password) => {
-    // Default master credentials: admin@mahadevgarage.com / mahadev@2026 or admin123
-    const validEmails = ['admin@mahadevgarage.com', 'admin@mahadev.com', 'admin'];
-    const validPasswords = ['mahadev@2026', 'admin123', 'mahadev123'];
-
-    if (validEmails.includes(email.trim().toLowerCase()) && validPasswords.includes(password.trim())) {
-      setIsAdminLoggedIn(true);
-      return { success: true };
+  const adminLogin = async (email, password) => {
+    try {
+      const data = await apiAdminLogin(email, password);
+      if (data && data.user) {
+        setAdminUser(data.user);
+        setIsAdminLoggedIn(true);
+        return { success: true, user: data.user };
+      }
+      return { success: false, message: 'Invalid email or password. Please verify your credentials.' };
+    } catch (err) {
+      return {
+        success: false,
+        message: err.message || 'Invalid email or password. Please verify your credentials.'
+      };
     }
-    return { success: false, message: 'Invalid credentials. Please check your username/password.' };
   };
 
-  const adminLogout = () => {
-    setIsAdminLoggedIn(false);
+  const adminLogout = async () => {
+    try {
+      await apiAdminLogout();
+    } catch (err) {
+      console.warn('Logout API warning:', err.message);
+    } finally {
+      setAdminUser(null);
+      setIsAdminLoggedIn(false);
+    }
   };
 
   // ---------------- SERVICES CRUD ----------------
@@ -393,6 +423,11 @@ export function GarageProvider({ children }) {
     data,
     bookings,
     isAdminLoggedIn,
+    adminUser,
+    isLoadingAuth,
+    adminRole: adminUser?.role || null,
+    isOwner: adminUser?.role === 'OWNER',
+    isSuperAdmin: adminUser?.role === 'SUPER_ADMIN',
     adminLogin,
     adminLogout,
     // Services

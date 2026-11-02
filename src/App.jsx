@@ -24,7 +24,7 @@ const isAdminRoute = () => {
 };
 
 function GarageWebsiteApp() {
-  const { isAdminLoggedIn } = useGarage();
+  const { isAdminLoggedIn, isLoadingAuth } = useGarage();
   const [currentView, setCurrentView] = useState(() => {
     return isAdminRoute() ? 'admin' : 'site';
   });
@@ -63,8 +63,33 @@ function GarageWebsiteApp() {
     window.scrollTo(0, 0);
   };
 
-  // If in admin mode: show AdminLogin or AdminDashboard
+  // If in admin mode: show loading, AdminLogin, or AdminDashboard
   if (currentView === 'admin') {
+    if (isLoadingAuth) {
+      return (
+        <div style={{
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: '#0B0F19',
+          color: '#F8FAFC'
+        }}>
+          <div style={{
+            width: '42px',
+            height: '42px',
+            border: '3px solid rgba(220, 38, 38, 0.2)',
+            borderTopColor: '#DC2626',
+            borderRadius: '50%',
+            animation: 'spin 0.8s linear infinite'
+          }} />
+          <p style={{ marginTop: '1rem', color: '#94A3B8', fontSize: '0.9rem', fontWeight: 500 }}>
+            Verifying secure session...
+          </p>
+        </div>
+      );
+    }
     if (!isAdminLoggedIn) {
       return <AdminLogin onBackToSite={handleBackToSite} />;
     }

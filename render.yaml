@@ -1,0 +1,34 @@
+# ==============================================================================
+# Render Blueprint Infrastructure-as-Code Specification
+# Mahadev Mechanical Car Garage - Backend API Web Service
+# ==============================================================================
+services:
+  - type: web
+    name: mahadev-garage-backend
+    env: node
+    rootDir: server
+    region: singapore # Optimized low-latency region for Indian automotive operations
+    plan: starter
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    autoDeploy: false # Controlled production deployment upon owner verification
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: IS_CROSS_DOMAIN
+        value: "true"
+      - key: COOKIE_SAME_SITE
+        value: none
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: FRONTEND_URL
+        sync: false # Set to Vercel production deployment URL (e.g., https://mahadev-mechanical-car-garage.vercel.app)
+      - key: MONGODB_URI
+        sync: false # Set to MongoDB Atlas production replica set URI
+      - key: JWT_SECRET
+        generateValue: true # Render automatically generates cryptographically strong secret
+      - key: CSRF_SECRET
+        generateValue: true # Render automatically generates cryptographically strong secret

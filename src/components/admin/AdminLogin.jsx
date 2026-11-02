@@ -11,7 +11,7 @@ export default function AdminLogin({ onBackToSite }) {
   const [errorMsg, setErrorMsg] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMsg('');
 
@@ -22,13 +22,16 @@ export default function AdminLogin({ onBackToSite }) {
 
     setIsLoading(true);
 
-    setTimeout(() => {
-      const res = adminLogin(email, password);
-      setIsLoading(false);
+    try {
+      const res = await adminLogin(email.trim(), password);
       if (!res.success) {
-        setErrorMsg(res.message);
+        setErrorMsg(res.message || 'Invalid email or password. Please verify your credentials.');
       }
-    }, 400);
+    } catch {
+      setErrorMsg('Invalid email or password. Please verify your credentials.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
