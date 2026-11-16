@@ -49,9 +49,11 @@ export default function AppointmentModal({ isOpen, onClose, initialService }) {
   const [errorMessage, setErrorMessage] = useState('');
   const [bookingConfirmed, setBookingConfirmed] = useState(false);
   const [bookingId, setBookingId] = useState('');
+  const [confirmedBooking, setConfirmedBooking] = useState(null);
   const [registrationConflict, setRegistrationConflict] = useState(false);
   const [enquiryConfirmed, setEnquiryConfirmed] = useState(false);
   const [enquiryTicket, setEnquiryTicket] = useState('');
+  const [confirmedEnquiry, setConfirmedEnquiry] = useState(null);
 
   // Keep track of service selection changes
   const [lastInitialServiceTitle, setLastInitialServiceTitle] = useState(initialService?.title);
@@ -94,16 +96,17 @@ export default function AppointmentModal({ isOpen, onClose, initialService }) {
 
   const handleWhatsAppBooking = (e) => {
     e.preventDefault();
-    if (!formData.name || !formData.phone) {
+    const activeBooking = confirmedBooking || formData;
+    if (!activeBooking.name || !activeBooking.phone) {
       setErrorMessage('Please enter your name and phone number.');
       return;
     }
 
     const whatsappUrl = getWhatsAppBookingUrl({
-      service: formData.service,
-      carModel: `${formData.brand} ${formData.model}${formData.registrationNumber ? ` (${formData.registrationNumber})` : ''}`.trim(),
-      date: `${formData.date} (${formData.timeSlot})`,
-      name: `${formData.name} (Phone: ${formData.phone})`
+      service: activeBooking.service,
+      carModel: `${activeBooking.brand} ${activeBooking.model}${activeBooking.registrationNumber ? ` (${activeBooking.registrationNumber})` : ''}`.trim(),
+      date: `${activeBooking.date} (${activeBooking.timeSlot})`,
+      name: `${activeBooking.name} (Phone: ${activeBooking.phone})`
     });
     window.open(whatsappUrl, '_blank');
     onClose();
@@ -144,25 +147,35 @@ export default function AppointmentModal({ isOpen, onClose, initialService }) {
         idempotencyKey
       );
 
-      const returnedBookingRef = response.data?.bookingReference || 'MHG-' + Math.floor(1000 + Math.random() * 9000);
-      setBookingId(returnedBookingRef);
-      setRegistrationConflict(Boolean(response.data?.registrationConflict));
+      const returnedBookingRef = response?.data?.bookingReference;
+      if (!returnedBookingRef || typeof returnedBookingRef !== 'string') {
+        throw new Error('Appointment was submitted, but the server did not return a valid booking reference. Please contact support.');
+      }
 
-      // Synchronize in-memory garage context for immediate local administrative visibility
-      addBooking({
+      const bookingSnapshot = {
         id: returnedBookingRef,
-        name: formData.name,
-        phone: formData.phone,
+        name: formData.name.trim(),
+        phone: formData.phone.trim(),
         service: formData.service,
-        brand: formData.brand,
-        model: formData.model,
+        brand: formData.brand.trim(),
+        model: formData.model.trim(),
+        registrationNumber: formData.registrationNumber.trim() || undefined,
         date: formData.date,
         timeSlot: formData.timeSlot,
-        notes: formData.notes,
+        notes: formData.notes.trim() || undefined,
         source: 'Website Online',
-        status: 'Pending',
+        status: response.data?.status || 'Pending',
         createdAt: new Date().toISOString()
-      });
+      };
+
+      setBookingId(returnedBookingRef);
+      setRegistrationConflict(Boolean(response.data?.registrationConflict));
+      setConfirmedBooking(bookingSnapshot);
+
+      // Synchronize in-memory garage context for immediate local administrative visibility
+      if (typeof addBooking === 'function') {
+        addBooking(bookingSnapshot);
+      }
 
       setBookingConfirmed(true);
       // Cleanly reset form state for next booking while preserving confirmation view
@@ -209,8 +222,17 @@ export default function AppointmentModal({ isOpen, onClose, initialService }) {
         idempotencyKey
       );
 
-      const ticket = response.data?.ticketNumber || 'ENQ-' + Math.floor(1000 + Math.random() * 9000);
+      const ticket = response?.data?.ticketNumber;
+      if (!ticket || typeof ticket !== 'string') {
+        throw new Error('Enquiry was submitted, but the server did not return a valid tracking ticket. Please try again.');
+      }
+
       setEnquiryTicket(ticket);
+      setConfirmedEnquiry({
+        name: enquiryData.name.trim(),
+        phone: enquiryData.phone.trim(),
+        preferredContactMethod: enquiryData.preferredContactMethod
+      });
       setEnquiryConfirmed(true);
       setEnquiryData(getInitialEnquiryState());
       setIdempotencyKey(generateUUIDv4());
@@ -225,6 +247,11 @@ export default function AppointmentModal({ isOpen, onClose, initialService }) {
   const handleReset = () => {
     setBookingConfirmed(false);
     setEnquiryConfirmed(false);
+    setConfirmedBooking(null);
+    setConfirmedEnquiry(null);
+    setBookingId('');
+    setEnquiryTicket('');
+    setRegistrationConflict(false);
     setErrorMessage('');
     setFormData(getInitialBookingState());
     setEnquiryData(getInitialEnquiryState());
@@ -295,7 +322,7 @@ export default function AppointmentModal({ isOpen, onClose, initialService }) {
             </div>
             <h4 className="success-heading">Appointment Confirmed!</h4>
             <p className="success-text">
-              Thank you, <strong>{formData.name}</strong>. Your service booking reference is:
+              Thank you, <strong>{confirmedBooking?.name || formData.name}</strong>. Your service booking reference is:
             </p>
             <div className="booking-badge">{bookingId}</div>
 
@@ -308,19 +335,19 @@ export default function AppointmentModal({ isOpen, onClose, initialService }) {
             <div className="success-details-card">
               <div className="success-row">
                 <span>Service:</span>
-                <strong>{formData.service}</strong>
+                <strong>{confirmedBooking?.service || formData.service}</strong>
               </div>
               <div className="success-row">
                 <span>Vehicle:</span>
-                <strong>{formData.brand} {formData.model} {formData.registrationNumber ? `(${formData.registrationNumber})` : ''}</strong>
+                <strong>{confirmedBooking?.brand || formData.brand} {confirmedBooking?.model || formData.model} {(confirmedBooking?.registrationNumber || formData.registrationNumber) ? `(${confirmedBooking?.registrationNumber || formData.registrationNumber})` : ''}</strong>
               </div>
               <div className="success-row">
                 <span>Date & Time:</span>
-                <strong>{formData.date} • {formData.timeSlot}</strong>
+                <strong>{confirmedBooking?.date || formData.date} • {confirmedBooking?.timeSlot || formData.timeSlot}</strong>
               </div>
               <div className="success-row">
                 <span>Workshop:</span>
-                <strong>Rohtak - Panipat Rd, Gohana</strong>
+                <strong>Near JK Garden, Gohana–Panipat Road</strong>
               </div>
             </div>
 
@@ -350,12 +377,12 @@ export default function AppointmentModal({ isOpen, onClose, initialService }) {
             </div>
             <h4 className="success-heading">Enquiry Received!</h4>
             <p className="success-text">
-              Thank you, <strong>{enquiryData.name}</strong>. Your enquiry ticket number is:
+              Thank you, <strong>{confirmedEnquiry?.name || enquiryData.name}</strong>. Your enquiry ticket number is:
             </p>
             <div className="booking-badge">{enquiryTicket}</div>
 
             <p className="success-text mb-4">
-              Our workshop supervisor will contact you via <strong>{enquiryData.preferredContactMethod}</strong> at <strong>{enquiryData.phone}</strong> shortly.
+              Our workshop supervisor will contact you via <strong>{confirmedEnquiry?.preferredContactMethod || enquiryData.preferredContactMethod}</strong> at <strong>{confirmedEnquiry?.phone || enquiryData.phone}</strong> shortly.
             </p>
 
             <div className="success-actions">
@@ -486,7 +513,7 @@ export default function AppointmentModal({ isOpen, onClose, initialService }) {
                 <input
                   type="text"
                   name="name"
-                  placeholder="e.g. Rahul Verma"
+                  placeholder="Enter your full name"
                   value={formData.name}
                   onChange={handleBookingChange}
                   className="form-input"

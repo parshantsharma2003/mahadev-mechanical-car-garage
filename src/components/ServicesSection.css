@@ -85,7 +85,7 @@
 
 .services-subtitle {
   font-size: 0.84rem;
-  color: #64748B;
+  color: #475569;
   margin-top: 0.35rem;
   line-height: 1.45;
 }
@@ -106,8 +106,10 @@
 }
 
 .carousel-control-btn {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
   border-radius: var(--radius-full);
   background: #FFFFFF;
   border: 1px solid #E2E8F0;
@@ -362,7 +364,7 @@
 .service-card-desc {
   font-family: var(--font-body);
   font-size: 0.8125rem;
-  color: #64748B !important;
+  color: #475569 !important;
   line-height: 1.45;
   margin: 0 0 0.95rem 0;
   min-height: 2.35rem; /* Strict reserve for 2-line description stability */
@@ -430,11 +432,12 @@
 
 .service-action-pill {
   width: 100%;
+  min-height: 44px;
   background: #FEE2E2;
   color: #DC2626;
   border: 1px solid rgba(220, 38, 38, 0.2);
   border-radius: var(--radius-full);
-  padding: 0.52rem 1rem;
+  padding: 0.65rem 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -483,17 +486,29 @@
 }
 
 .services-dot {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.services-dot-pill {
   width: 8px;
   height: 8px;
   border-radius: var(--radius-full);
   background-color: #CBD5E1;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  cursor: pointer;
-  padding: 0;
-  border: none;
+  display: block;
 }
 
-.services-dot.active {
+.services-dot.active .services-dot-pill {
   background-color: #DC2626;
   width: 26px;
   box-shadow: 0 2px 6px rgba(220, 38, 38, 0.35);
@@ -554,7 +569,11 @@
   background: rgba(220, 38, 38, 0.15);
   color: #FF6B6B;
   border: 1px solid rgba(220, 38, 38, 0.4);
-  padding: 0.45rem 1rem;
+  padding: 0.65rem 1.25rem;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border-radius: var(--radius-full);
   transition: all var(--transition-fast);
   white-space: nowrap;

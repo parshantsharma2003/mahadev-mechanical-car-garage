@@ -1,17 +1,17 @@
 import dotenv from 'dotenv';
 import bcrypt from 'bcryptjs';
+import mongoose from 'mongoose';
 import { connectDB, disconnectDB } from '../config/db.js';
 import {
   User,
   Service,
   GalleryItem,
-  Review,
   BusinessSetting
 } from '../models/index.js';
 
 dotenv.config();
 
-// Existing garage configuration & content
+// Genuine garage services with verified local imagery
 const initialServices = [
   {
     slug: 'general-car-service',
@@ -98,7 +98,7 @@ const initialServices = [
     title: 'OBD-II Computer Diagnostics',
     shortDesc: 'Live sensor telemetry, check engine light & electrical.',
     fullDesc: 'Digital scan tool diagnostics to read ECU error codes, inspect live sensor data, test alternator and battery health, and resolve complex electrical/electronic issues.',
-    image: 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=800&q=80',
+    image: '/images/periodic-service.jpg',
     tag: 'Precision Tech',
     icon: 'Cpu',
     priceDisplay: '₹799 Onwards',
@@ -114,7 +114,7 @@ const initialServices = [
     title: 'Brakes & Suspension Repair',
     shortDesc: 'Disc rotor truing, caliper overhaul, shock absorbers.',
     fullDesc: 'Complete hydraulic brake bleeding, genuine ceramic/semi-metallic brake pads, disc rotor truing, link rod, bush, and shock absorber overhaul.',
-    image: 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=800&q=80',
+    image: '/images/steam-wash.jpg',
     tag: 'Safety Critical',
     icon: 'Disc',
     priceDisplay: '₹999 Onwards',
@@ -130,7 +130,7 @@ const initialServices = [
     title: 'Denting & Paint Correction',
     shortDesc: 'Panel repair, scratch removal & color match spray.',
     fullDesc: 'Precision panel beating, dent puller equipment, high-grade primer, computerized paint matching, and dust-free heated clear coat finish.',
-    image: 'https://images.unsplash.com/photo-1520340356584-f9917d1eea6f?auto=format&fit=crop&w=800&q=80',
+    image: '/images/car-detailing.jpg',
     tag: 'Bodywork',
     icon: 'Paintbrush',
     priceDisplay: 'Custom Quote',
@@ -143,6 +143,7 @@ const initialServices = [
   }
 ];
 
+// Verified genuine local workshop media only (zero Unsplash stock entries)
 const initialGallery = [
   {
     title: 'Multi-Stage Paint Correction & Gloss Finish',
@@ -191,154 +192,49 @@ const initialGallery = [
     description: 'Synthetic engine oil replacement with OEM filter and 40-point safety inspection.',
     type: 'image',
     sortOrder: 6
-  },
-  {
-    title: 'Precision Brake Disc Truing & Caliper Service',
-    category: 'Brakes & Suspension',
-    image: 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=1000&q=80',
-    description: 'Hydraulic caliper overhaul, fresh brake fluid, and rotor thickness inspection.',
-    type: 'image',
-    sortOrder: 7
-  },
-  {
-    title: 'Computerized OBD-II Electronic Scan Tool',
-    category: 'Diagnostics',
-    image: 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=1000&q=80',
-    description: 'Real-time engine telemetry and sensor diagnostics for all brands.',
-    type: 'image',
-    sortOrder: 8
-  },
-  {
-    title: 'High-Precision Laser Wheel Alignment & Balancing',
-    category: 'Tyres & Alignment',
-    image: 'https://images.unsplash.com/photo-1578844251758-2f71da64c96f?auto=format&fit=crop&w=1000&q=80',
-    description: 'Computerized laser wheel alignment eliminating uneven tire wear and steering vibrations.',
-    type: 'image',
-    sortOrder: 9
-  },
-  {
-    title: 'Comprehensive Engine Block & Mechanical Overhaul',
-    category: 'Engine Work',
-    image: 'https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?auto=format&fit=crop&w=1000&q=80',
-    description: 'Precision engine cylinder inspection, piston ring fitment, and timing calibration.',
-    type: 'image',
-    sortOrder: 10
-  },
-  {
-    title: 'Professional 9H Ceramic Coating & Paint Sealant',
-    category: 'Detailing',
-    image: 'https://images.unsplash.com/photo-1607860108855-64acf2078ed9?auto=format&fit=crop&w=1000&q=80',
-    description: 'Ultra-hydrophobic ceramic glass coating providing years of paint protection and gloss.',
-    type: 'image',
-    sortOrder: 11
-  },
-  {
-    title: 'Hydraulic Two-Post Ramp Underbody Inspection',
-    category: 'Inspection',
-    image: 'https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=1000&q=80',
-    description: 'Full underchassis inspection checking exhaust system, differential, and suspension bushings.',
-    type: 'image',
-    sortOrder: 12
-  },
-  {
-    title: 'Suspension Bushing & Performance Shock Overhaul',
-    category: 'Brakes & Suspension',
-    image: 'https://images.unsplash.com/photo-1625047509168-a7026f36de04?auto=format&fit=crop&w=1000&q=80',
-    description: 'Heavy-duty shock absorber, link rod, and lower arm replacement for smooth highway cruising.',
-    type: 'image',
-    sortOrder: 13
-  },
-  {
-    title: 'Modern Dedicated Bay Maintenance Workshop',
-    category: 'Workshop',
-    image: 'https://images.unsplash.com/photo-1613214149922-f1809c99b414?auto=format&fit=crop&w=1000&q=80',
-    description: 'Clean, organized service bays with specialized tools for quick and error-free turnaround.',
-    type: 'image',
-    sortOrder: 14
-  },
-  {
-    title: 'Heavy-Duty Alternator & Battery Diagnostics',
-    category: 'Electrical',
-    image: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1000&q=80',
-    description: 'Digital battery load testing, cranking voltage measurement, and charging circuit check.',
-    type: 'image',
-    sortOrder: 15
-  },
-  {
-    title: 'Crystal-Clear Headlight Restoration & Polish',
-    category: 'Detailing',
-    image: 'https://images.unsplash.com/photo-1507136566006-cfc505b114fc?auto=format&fit=crop&w=1000&q=80',
-    description: 'Multi-grit wet sanding and UV sealing restoring cloudy, yellowed headlights to crystal clarity.',
-    type: 'image',
-    sortOrder: 16
-  }
-];
-
-const initialReviews = [
-  {
-    customerName: 'Rahul Verma',
-    carModel: 'Hyundai Creta',
-    serviceTaken: 'Periodic Service & Detailing',
-    rating: 5,
-    comment: 'Excellent service! Very professional and honest. My car feels like new again. Highly recommended!',
-    reviewDate: '2 weeks ago',
-    verified: true,
-    source: 'Google Verified'
-  },
-  {
-    customerName: 'Amit Sharma',
-    carModel: 'Swift Dzire (Diesel)',
-    serviceTaken: 'Japanese Engine Carbon Cleaning',
-    rating: 5,
-    comment: 'Got the Japanese carbon cleaning done here. Engine sound is noticeably quieter and pickup improved immediately on highway drives.',
-    reviewDate: '1 month ago',
-    verified: true,
-    source: 'Google Verified'
-  },
-  {
-    customerName: 'Deepak Malik',
-    carModel: 'Mahindra Scorpio',
-    serviceTaken: 'AC Service & Suspension Check',
-    rating: 5,
-    comment: 'Best car garage in Gohana without doubt. Transparent work right in front of you, genuine spare parts, and reasonable rates.',
-    reviewDate: '3 weeks ago',
-    verified: true,
-    source: 'Google Verified'
-  },
-  {
-    customerName: 'Suresh Hooda',
-    carModel: 'Maruti Baleno',
-    serviceTaken: 'Foam Wash & Steam Sanitization',
-    rating: 5,
-    comment: 'Exceptional AC servicing and foam wash. The cooling is icy cold now even in peak summer heat. Staff is polite and skilled.',
-    reviewDate: '2 months ago',
-    verified: true,
-    source: 'Google Verified'
   }
 ];
 
 export async function seedDatabase() {
-  console.log('[Seed] Starting database seeding process...');
+  console.log('[Seed] Initializing database seeding check...');
+
+  // 1. Identify target database before performing any operations
+  const dbHost = mongoose.connection.host || 'unknown';
+  const dbName = mongoose.connection.name || 'unknown';
+  console.log(`[Seed Safety] Target Database Host: ${dbHost}`);
+  console.log(`[Seed Safety] Target Database Name: ${dbName}`);
 
   const stats = {
     owner: 'skipped',
     services: { created: 0, skipped: 0 },
     gallery: { created: 0, skipped: 0 },
-    reviews: { created: 0, skipped: 0 },
     businessSettings: 'skipped'
   };
 
-  // 1. Seed initial OWNER account
-  const ownerEmail = (process.env.OWNER_INIT_EMAIL || 'owner@mahadevgarage.com').trim().toLowerCase();
-  const ownerPassword = process.env.OWNER_INIT_PASSWORD || 'MahadevOwner#2026';
-  const ownerName = process.env.OWNER_INIT_NAME || 'Mahadev Garage Owner';
-  const ownerPhone = process.env.OWNER_INIT_PHONE || '8295669463';
+  // 2. Provision initial OWNER account (strictly idempotent, requires strong custom password)
+  const ownerEmail = process.env.OWNER_INIT_EMAIL ? process.env.OWNER_INIT_EMAIL.trim().toLowerCase() : null;
+  const ownerPassword = process.env.OWNER_INIT_PASSWORD ? process.env.OWNER_INIT_PASSWORD.trim() : null;
+  const ownerName = (process.env.OWNER_INIT_NAME || 'Mahadev Garage Owner').trim();
+  const ownerPhone = (process.env.OWNER_INIT_PHONE || '8295669463').trim();
 
   const existingOwner = await User.findOne({
-    $or: [{ role: 'OWNER' }, { email: ownerEmail }]
+    $or: [{ role: 'OWNER' }, ...(ownerEmail ? [{ email: ownerEmail }] : [])]
   });
 
   if (!existingOwner) {
+    if (!ownerEmail) {
+      throw new Error('[Seed Error] Missing OWNER_INIT_EMAIL. An explicit owner email must be configured to provision initial owner.');
+    }
+    if (!ownerPassword) {
+      throw new Error('[Seed Error] Missing OWNER_INIT_PASSWORD. A strong custom owner password is required. Never use hardcoded defaults.');
+    }
+    if (ownerPassword.length < 12) {
+      throw new Error('[Seed Error] OWNER_INIT_PASSWORD must be at least 12 characters long for production security.');
+    }
+    if (ownerPassword === 'MahadevOwner#2026' || ownerPassword.toLowerCase().includes('password')) {
+      throw new Error('[Seed Error] Insecure or sample owner password rejected. Please supply a strong custom secret.');
+    }
+
     const saltRounds = 12;
     const passwordHash = await bcrypt.hash(ownerPassword, saltRounds);
 
@@ -352,17 +248,17 @@ export async function seedDatabase() {
       tokenVersion: 0
     });
 
-    console.log(`[Seed] Initial OWNER account created successfully: ${ownerEmail}`);
+    console.log(`[Seed] Initial OWNER account provisioned successfully: ${ownerEmail}`);
     stats.owner = 'created';
   } else {
-    console.log(`[Seed] OWNER account already exists (${existingOwner.email}). Skipping.`);
+    console.log(`[Seed] OWNER account already exists (${existingOwner.email}). Skipping owner creation.`);
   }
 
-  // 2. Seed Services (idempotent, never overwrite)
+  // 3. Seed Services (idempotent, never overwrite existing)
   for (const svc of initialServices) {
     const existing = await Service.findOne({ slug: svc.slug });
     if (!existing) {
-      await Service.create(svc);
+      await Service.create({ ...svc, isActive: true });
       stats.services.created++;
     } else {
       stats.services.skipped++;
@@ -370,11 +266,11 @@ export async function seedDatabase() {
   }
   console.log(`[Seed] Services: ${stats.services.created} created, ${stats.services.skipped} skipped.`);
 
-  // 3. Seed Gallery Items (idempotent, never overwrite)
+  // 4. Seed Gallery Items (idempotent, never overwrite existing)
   for (const item of initialGallery) {
     const existing = await GalleryItem.findOne({ title: item.title });
     if (!existing) {
-      await GalleryItem.create(item);
+      await GalleryItem.create({ ...item, isActive: true });
       stats.gallery.created++;
     } else {
       stats.gallery.skipped++;
@@ -382,22 +278,9 @@ export async function seedDatabase() {
   }
   console.log(`[Seed] Gallery Items: ${stats.gallery.created} created, ${stats.gallery.skipped} skipped.`);
 
-  // 4. Seed Reviews (idempotent, never overwrite)
-  for (const rev of initialReviews) {
-    const existing = await Review.findOne({
-      customerName: rev.customerName,
-      comment: rev.comment
-    });
-    if (!existing) {
-      await Review.create(rev);
-      stats.reviews.created++;
-    } else {
-      stats.reviews.skipped++;
-    }
-  }
-  console.log(`[Seed] Reviews: ${stats.reviews.created} created, ${stats.reviews.skipped} skipped.`);
+  // Note: Unverified reviews are deliberately not seeded. Review collection is preserved for genuine customer submissions.
 
-  // 5. Seed Business Setting Singleton (idempotent, never overwrite)
+  // 5. Seed Business Setting Singleton (idempotent, never overwrite existing)
   const existingSettings = await BusinessSetting.findOne({ singletonKey: 'singleton' });
   if (!existingSettings) {
     await BusinessSetting.create({
@@ -406,12 +289,12 @@ export async function seedDatabase() {
         name: 'Mahadev Mechanical Car Garage',
         shortName: 'Mahadev Garage',
         tagline: 'Complete Car Care Under One Roof',
-        subTagline: 'Expert service, modern machines and genuine care for your car.',
-        locationBadge: "Haryana's Trusted Car Service Center",
-        rating: '4.8',
-        ratingMax: '5.0',
-        reviewCount: '250+',
-        happyCustomers: '5000+',
+        subTagline: 'Gohana’s trusted multi-brand car workshop. Expert mechanics, genuine parts & upfront pricing.',
+        locationBadge: 'Gohana, Haryana • Near JK Garden',
+        rating: '',
+        ratingMax: '',
+        reviewCount: '',
+        happyCustomers: '',
         establishedYear: '2018'
       },
       contact: {
@@ -421,12 +304,12 @@ export async function seedDatabase() {
         whatsappDisplay: '+91 82956 69463',
         email: 'mahadevgaragegohana@gmail.com',
         address: {
-          landmark: 'Near Indian Oil Petrol Pump',
-          road: 'Rohtak - Panipat Rd',
+          landmark: 'Near JK Garden',
+          road: 'Gohana–Panipat Road',
           city: 'Gohana',
           state: 'Haryana',
           pincode: '131301',
-          full: 'Mahadev Mechanical Car Garage, Near Indian Oil Petrol Pump, Rohtak - Panipat Rd, Gohana, Haryana 131301'
+          full: 'Mahadev Mechanical Car Garage, Near JK Garden, Gohana–Panipat Road, Gohana, Haryana 131301'
         },
         googleMapsDirectionsUrl:
           'https://www.google.com/maps/dir//Mahadev+Mechanical+Car+Garage,+Indian+Oil+Petrol+Pump,+Near,+Rohtak+-+Panipat+Rd,+Gohana,+Haryana+131301/@29.1471882,76.716434,15z/data=!4m8!4m7!1m0!1m5!1m1!1s0x390dedb9926e978d:0xba4bb7c45381f66d!2m2!1d76.716434!2d29.1471882',
@@ -446,10 +329,10 @@ export async function seedDatabase() {
         }
       },
       stats: [
-        { id: 'stat-1', number: '5000+', label: 'Happy Customers', sublabel: 'Satisfied car owners across Haryana', icon: 'Users' },
-        { id: 'stat-2', number: 'Trusted', label: 'Car Owners in Haryana', sublabel: '100% Genuine parts & transparent care', icon: 'ShieldCheck' },
-        { id: 'stat-3', number: '4.8/5', label: 'Customer Rating', sublabel: 'Verified Google reviews', icon: 'Star' },
-        { id: 'stat-4', number: 'All Brands', label: 'Servicing & Repair', sublabel: 'Hatchbacks, Sedans, SUVs & Luxury cars', icon: 'Car' }
+        { id: 'stat-1', number: '100% Genuine', label: 'OEM & OES Parts', sublabel: 'Authentic fluids, filters & components', icon: 'ShieldCheck' },
+        { id: 'stat-2', number: 'Multibrand', label: 'Complete Service Bay', sublabel: 'Hatchbacks, Sedans, SUVs & Commercial', icon: 'Wrench' },
+        { id: 'stat-3', number: 'Japanese Tech', label: 'Carbon Cleaning', sublabel: 'In-chassis hydrogen engine decarbonization', icon: 'Zap' },
+        { id: 'stat-4', number: 'Transparent', label: 'Digital Job Cards', sublabel: 'Fair estimates & upfront billing', icon: 'CheckCircle' }
       ]
     });
     console.log('[Seed] Business settings initialized.');
@@ -458,7 +341,7 @@ export async function seedDatabase() {
     console.log('[Seed] Business settings already exist. Skipping.');
   }
 
-  console.log('[Seed] Database seeding completed successfully.');
+  console.log('[Seed] Database seeding process completed.');
   return stats;
 }
 
@@ -466,12 +349,15 @@ export async function seedDatabase() {
 if (process.argv[1]?.endsWith('seed.js')) {
   (async () => {
     try {
+      if (!process.env.MONGODB_URI) {
+        throw new Error('[Seed Error] MONGODB_URI is not defined in environment variables.');
+      }
       await connectDB();
       await seedDatabase();
       await disconnectDB();
       process.exit(0);
     } catch (err) {
-      console.error('[Seed Error]:', err);
+      console.error('[Seed Error]:', err.message || err);
       process.exit(1);
     }
   })();

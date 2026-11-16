@@ -182,7 +182,10 @@ export default function ServicesSection({ onSelectService }) {
                     src={service.image} 
                     alt={service.title} 
                     className="service-img" 
+                    width="400"
+                    height="225"
                     loading="lazy"
+                    decoding="async"
                     draggable="false"
                   />
                   <div className="service-img-overlay" />
@@ -244,7 +247,9 @@ export default function ServicesSection({ onSelectService }) {
                   scrollToItem(idx);
                 }}
                 aria-label={`Go to service ${idx + 1}`}
-              />
+              >
+                <span className="services-dot-pill" aria-hidden="true" />
+              </button>
             ))}
           </div>
         </div>

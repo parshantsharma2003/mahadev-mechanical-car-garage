@@ -23,13 +23,18 @@ export default function Footer({ onOpenBooking }) {
           <div className="footer-col col-brand">
             <a href="#hero" className="footer-brand-logo mb-3" aria-label="Mahadev Mechanical Car Garage Home">
               <div className="footer-logo-card">
-                <img 
-                  src="/images/logo.png" 
-                  alt="Mahadev Mechanical Car Garage" 
-                  className="footer-logo-img" 
-                  width="160"
-                  height="54"
-                />
+                <picture>
+                  <source srcSet="/images/logo.webp" type="image/webp" />
+                  <img 
+                    src="/images/logo.png" 
+                    alt="Mahadev Mechanical Car Garage" 
+                    className="footer-logo-img" 
+                    width="160"
+                    height="54"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </picture>
               </div>
             </a>
             
@@ -45,7 +50,7 @@ export default function Footer({ onOpenBooking }) {
 
           {/* Col 2: Services List */}
           <div className="footer-col">
-            <h4 className="footer-col-title">Workshop Services</h4>
+            <h3 className="footer-col-title">Workshop Services</h3>
             <ul className="footer-links-list">
               {services.map((s) => (
                 <li key={s.id}>
@@ -60,7 +65,7 @@ export default function Footer({ onOpenBooking }) {
 
           {/* Col 3: Workshop Hours */}
           <div className="footer-col">
-            <h4 className="footer-col-title">Operating Hours</h4>
+            <h3 className="footer-col-title">Operating Hours</h3>
             <div className="footer-hours-card">
               <div className="hours-row">
                 <div className="hours-icon-col">
@@ -93,13 +98,13 @@ export default function Footer({ onOpenBooking }) {
 
           {/* Col 4: Address & Direct Contact */}
           <div className="footer-col col-contact">
-            <h4 className="footer-col-title">Garage Location</h4>
+            <h3 className="footer-col-title">Garage Location</h3>
             
             <div className="footer-contact-item">
               <MapPin size={20} className="contact-icon" />
               <div>
                 <strong>Mahadev Mechanical Car Garage</strong>
-                <p>Near Indian Oil Petrol Pump, Rohtak - Panipat Rd, Gohana, Haryana 131301</p>
+                <p>Near JK Garden, Gohana–Panipat Road, Gohana, Haryana 131301</p>
                 <a 
                   href={directionsUrl} 
                   target="_blank" 

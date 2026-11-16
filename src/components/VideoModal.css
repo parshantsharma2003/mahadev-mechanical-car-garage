@@ -35,12 +35,18 @@
 
 .video-modal-sub {
   font-size: 0.8125rem;
-  color: #94A3B8;
+  color: #CBD5E1;
 }
 
 .video-close-btn {
-  color: #94A3B8;
-  padding: 0.25rem;
+  color: #CBD5E1;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: var(--radius-sm);
   transition: all var(--transition-fast);
 }

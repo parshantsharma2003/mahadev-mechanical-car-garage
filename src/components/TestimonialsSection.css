@@ -54,10 +54,12 @@
   }
 }
 
-/* Navigation Buttons: 38px on mobile for easy finger tap */
+/* Navigation Buttons: Minimum 44px touch target */
 .carousel-nav-btn {
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
   border-radius: var(--radius-full);
   background-color: #F1F5F9;
   color: var(--color-text-main);
@@ -264,15 +266,68 @@
 }
 
 .carousel-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: var(--radius-full);
-  background-color: #CBD5E1;
-  transition: all var(--transition-fast);
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
   padding: 0;
 }
 
-.carousel-dot.active {
+.carousel-dot-inner {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background-color: #CBD5E1;
+  transition: all var(--transition-fast);
+  display: block;
+}
+
+.carousel-dot.active .carousel-dot-inner {
   background-color: #DC2626;
   width: 20px;
+}
+
+/* Empty Reviews State */
+.testimonials-empty-wrapper {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.empty-card-layout {
+  text-align: center;
+  padding: 2.25rem 1.5rem !important;
+}
+
+.empty-reviews-heading {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+  margin-bottom: 0.5rem;
+}
+
+.empty-reviews-sub {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  max-width: 480px;
+  margin: 0 auto 1.25rem;
+}
+
+.empty-reviews-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.85rem;
+  background-color: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #10B981;
 }

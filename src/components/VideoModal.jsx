@@ -10,29 +10,31 @@ export default function VideoModal({ isOpen, onClose }) {
       <div className="video-modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="video-modal-header">
           <div>
-            <h3 className="video-modal-title">Mahadev Mechanical Workshop Tour</h3>
-            <p className="video-modal-sub">Gohana, Haryana • Precision Technology in Action</p>
+            <h3 className="video-modal-title">Mahadev Mechanical Workshop Infrastructure</h3>
+            <p className="video-modal-sub">Gohana, Haryana • Precision Technology & Care</p>
           </div>
-          <button className="video-close-btn" onClick={onClose} aria-label="Close video tour">
+          <button className="video-close-btn" onClick={onClose} aria-label="Close dialog">
             <X size={22} />
           </button>
         </div>
 
         <div className="video-viewport">
-          <img 
-            src="https://images.unsplash.com/photo-1487754180451-c456f719a1fc?auto=format&fit=crop&w=1200&q=80" 
-            alt="Mahadev Garage Workshop Machinery" 
-            className="video-poster-img"
-          />
+          <picture>
+            <source srcSet="/images/periodic-service.webp" type="image/webp" />
+            <img 
+              src="/images/periodic-service.jpg" 
+              alt="Mahadev Garage Workshop Machinery" 
+              className="video-poster-img"
+              width="900"
+              height="506"
+              loading="lazy"
+              decoding="async"
+            />
+          </picture>
           <div className="video-sim-overlay">
-            <div className="video-hud-tag">
-              <span className="live-dot"></span>
-              <span>LIVE WORKSHOP BAY</span>
-            </div>
-
             <div className="video-caption-box">
               <h4>Modern Automotive Repair Infrastructure</h4>
-              <p>Equipped with hydraulic 4-post car lifts, Japanese hydrogen engine decarbonization stations, automated AC gas recyclers, and digital OBD-II diagnostic equipment.</p>
+              <p>Equipped with hydraulic car lifts, Japanese hydrogen engine decarbonization stations, automated AC gas recyclers, and digital OBD-II diagnostic equipment.</p>
               
               <div className="video-specs-grid">
                 <div className="spec-badge">

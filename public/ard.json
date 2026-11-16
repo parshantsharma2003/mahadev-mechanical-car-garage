@@ -1,0 +1,12 @@
+{
+  "name": "Mahadev Mechanical Car Garage",
+  "description": "Multi-brand automotive repair and maintenance workshop in Gohana, Haryana.",
+  "version": "1.0.0",
+  "url": "https://mahadev-mechanical-car-garage.vercel.app/",
+  "documentation": "https://mahadev-mechanical-car-garage.vercel.app/llms.txt",
+  "contact": {
+    "phone": "+918295669463",
+    "whatsapp": "+918295669463",
+    "address": "Near JK Garden, Gohana–Panipat Road, Gohana, Haryana 131301"
+  }
+}

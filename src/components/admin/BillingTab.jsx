@@ -1356,7 +1356,7 @@ export default function BillingTab({ isOwner = false }) {
                     <h2 className="print-garage-name">Mahadev Mechanical Car Garage</h2>
                     <p className="print-garage-tagline">Complete Car Care Under One Roof</p>
                     <div className="print-garage-contact">
-                      <p>Near Indian Oil Petrol Pump, Rohtak - Panipat Rd, Gohana, Haryana 131301</p>
+                      <p>Near JK Garden, Gohana–Panipat Road, Gohana, Haryana 131301</p>
                       <p>Phone: +91 82956 69463 | Email: mahadevgaragegohana@gmail.com</p>
                     </div>
                   </div>

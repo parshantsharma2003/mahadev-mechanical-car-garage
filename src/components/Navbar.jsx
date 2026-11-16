@@ -36,13 +36,17 @@ export default function Navbar({ onOpenBooking }) {
         <div className="container navbar-container">
           {/* Brand Logo */}
           <a href="#hero" className="brand-logo" aria-label="Mahadev Mechanical Car Garage Home">
-            <img 
-              src="/images/logo-transparent.png" 
-              alt="Mahadev Mechanical Car Garage" 
-              className="brand-logo-img" 
-              width="140" 
-              height="48"
-            />
+            <picture>
+              <source srcSet="/images/logo-transparent.webp" type="image/webp" />
+              <img 
+                src="/images/logo-transparent.png" 
+                alt="Mahadev Mechanical Car Garage" 
+                className="brand-logo-img" 
+                width="140" 
+                height="48"
+                decoding="async"
+              />
+            </picture>
           </a>
 
           {/* Desktop Navigation Links */}
@@ -92,13 +96,17 @@ export default function Navbar({ onOpenBooking }) {
         <div className="mobile-drawer" onClick={(e) => e.stopPropagation()}>
           <div className="drawer-header">
             <a href="#hero" onClick={() => setMobileMenuOpen(false)} className="drawer-brand-logo" aria-label="Mahadev Mechanical Car Garage Home">
-              <img 
-                src="/images/logo-transparent.png" 
-                alt="Mahadev Mechanical Car Garage" 
-                className="drawer-logo-img" 
-                width="135" 
-                height="44"
-              />
+              <picture>
+                <source srcSet="/images/logo-transparent.webp" type="image/webp" />
+                <img 
+                  src="/images/logo-transparent.png" 
+                  alt="Mahadev Mechanical Car Garage" 
+                  className="drawer-logo-img" 
+                  width="135" 
+                  height="44"
+                  decoding="async"
+                />
+              </picture>
             </a>
             <button 
               className="drawer-close-btn" 
@@ -129,7 +137,7 @@ export default function Navbar({ onOpenBooking }) {
                 <MapPin size={18} className="drawer-icon-red" />
                 <div>
                   <strong>Workshop Location</strong>
-                  <p>Rohtak - Panipat Rd, Near Indian Oil Pump, Gohana</p>
+                  <p>Near JK Garden, Gohana–Panipat Road, Gohana</p>
                 </div>
               </div>
               <div className="drawer-info-row">

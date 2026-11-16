@@ -20,6 +20,7 @@ import dotenv from 'dotenv';
 import bcrypt from 'bcryptjs';
 import mongoose from 'mongoose';
 import { randomUUID } from 'crypto';
+import { assertSafeTestEnvironment, assertConnectedToSafeTestDb } from './testSafetyGuard.js';
 import { connectDB, disconnectDB } from '../src/config/db.js';
 import { app } from '../src/app.js';
 import {
@@ -40,7 +41,8 @@ import {
   AuditLog
 } from '../src/models/index.js';
 
-dotenv.config();
+// Pre-execution Production Safety Guard
+assertSafeTestEnvironment();
 
 const TEST_PORT = 5095;
 const BASE_URL = `http://127.0.0.1:${TEST_PORT}`;
@@ -102,6 +104,7 @@ async function runPhase10E2ETests() {
 
   try {
     await connectDB();
+    await assertConnectedToSafeTestDb();
     server = app.listen(TEST_PORT);
     console.log(`[Phase 10 Test Server] Listening on ${BASE_URL}\n`);
 

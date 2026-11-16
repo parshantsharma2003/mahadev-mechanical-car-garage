@@ -10,67 +10,7 @@ import {
 const GarageContext = createContext(null);
 
 const STORAGE_KEY_DATA = 'mahadev_garage_data_v2';
-const STORAGE_KEY_BOOKINGS = 'mahadev_garage_bookings_v2';
-
-// Initial sample bookings
-const DEFAULT_BOOKINGS = [
-  {
-    id: 'MHG-1082',
-    name: 'Suresh Kumar',
-    phone: '9812345678',
-    service: 'General Car Service',
-    brand: 'Hyundai',
-    model: 'Creta 1.5 Petrol',
-    date: '2026-10-26',
-    timeSlot: 'Morning (09:00 AM - 12:00 PM)',
-    status: 'Confirmed',
-    notes: 'Engine oil replacement and 40-point safety check',
-    source: 'Website Online',
-    createdAt: '2026-10-24T09:15:00.000Z'
-  },
-  {
-    id: 'MHG-1085',
-    name: 'Rajesh Hooda',
-    phone: '9416283921',
-    service: 'Japanese Engine Carbon Cleaning',
-    brand: 'Maruti Suzuki',
-    model: 'Swift Dzire Diesel',
-    date: '2026-10-26',
-    timeSlot: 'Afternoon (12:00 PM - 03:00 PM)',
-    status: 'Pending',
-    notes: 'Low mileage issue and sluggish pickup on highway',
-    source: 'Website Online',
-    createdAt: '2026-10-24T11:40:00.000Z'
-  },
-  {
-    id: 'MHG-1077',
-    name: 'Vikram Nain',
-    phone: '8950123490',
-    service: 'Automated AC Servicing',
-    brand: 'Mahindra',
-    model: 'Scorpio-N',
-    date: '2026-10-25',
-    timeSlot: 'Evening (03:00 PM - 07:00 PM)',
-    status: 'In Progress',
-    notes: 'AC cooling weak in afternoon heat, filter check requested',
-    source: 'Walk-in / Phone',
-    createdAt: '2026-10-23T14:20:00.000Z'
-  },
-  {
-    id: 'MHG-1064',
-    name: 'Anil Malik',
-    phone: '9812987654',
-    service: 'Car Detailing & Foam Wash',
-    brand: 'Kia',
-    model: 'Seltos',
-    date: '2026-10-24',
-    timeSlot: 'Morning (09:00 AM - 12:00 PM)',
-    status: 'Completed',
-    notes: 'Deep interior vacuuming and ceramic gloss wax polish',
-    source: 'WhatsApp',
-    createdAt: '2026-10-22T16:00:00.000Z'
-  }
-];
+const LEGACY_STORAGE_KEY_BOOKINGS = 'mahadev_garage_bookings_v2';
 
 export function GarageProvider({ children }) {
   // 1. Garage Data (Business info, services, gallery, reviews, stats)
@@ -99,24 +39,47 @@ export function GarageProvider({ children }) {
           mergedSocial.youtube = defaultGarageData.contact.social.youtube;
         }
 
+        const fakeReviewAuthors = new Set(['Rahul Verma', 'Amit Sharma', 'Deepak Malik', 'Suresh Hooda']);
+        const sanitizedReviews = (parsed.reviews || []).filter(r => !fakeReviewAuthors.has(r.author));
+
+        const sanitizedGallery = (parsed.gallery || []).filter(item => {
+          const img = item.image || '';
+          return !img.includes('unsplash.com') && !['gal-7', 'gal-8', 'gal-9', 'gal-10', 'gal-11', 'gal-12', 'gal-13', 'gal-14', 'gal-15', 'gal-16'].includes(item.id);
+        });
+
+        const mergedGallery = (() => {
+          const savedIds = new Set(sanitizedGallery.map(g => g.id));
+          const newDefaults = defaultGarageData.gallery.filter(g => !savedIds.has(g.id));
+          return [...sanitizedGallery, ...newDefaults];
+        })();
+
+        const sanitizedBusiness = {
+          ...defaultGarageData.business,
+          ...(parsed.business || {}),
+          locationBadge: defaultGarageData.business.locationBadge,
+          subTagline: defaultGarageData.business.subTagline
+        };
+        delete sanitizedBusiness.rating;
+        delete sanitizedBusiness.ratingMax;
+        delete sanitizedBusiness.reviewCount;
+        delete sanitizedBusiness.happyCustomers;
+
+        const sanitizedContact = {
+          ...defaultGarageData.contact,
+          ...(parsed.contact || {}),
+          address: defaultGarageData.contact.address,
+          social: mergedSocial
+        };
+
         return {
           ...defaultGarageData,
           ...parsed,
-          business: { ...defaultGarageData.business, ...(parsed.business || {}) },
-          contact: { 
-            ...defaultGarageData.contact, 
-            ...(parsed.contact || {}),
-            social: mergedSocial
-          },
-          services: parsed.services?.length ? parsed.services : defaultGarageData.services,
-          gallery: (() => {
-            const savedGallery = parsed.gallery || [];
-            const savedIds = new Set(savedGallery.map(g => g.id));
-            const newDefaults = defaultGarageData.gallery.filter(g => !savedIds.has(g.id));
-            return [...savedGallery, ...newDefaults];
-          })(),
-          reviews: parsed.reviews?.length ? parsed.reviews : defaultGarageData.reviews,
-          stats: parsed.stats?.length ? parsed.stats : defaultGarageData.stats
+          business: sanitizedBusiness,
+          contact: sanitizedContact,
+          services: defaultGarageData.services,
+          gallery: mergedGallery,
+          reviews: sanitizedReviews,
+          stats: defaultGarageData.stats
         };
       }
     } catch (e) {
@@ -125,28 +88,43 @@ export function GarageProvider({ children }) {
     return defaultGarageData;
   });
 
-  // 2. Customer Bookings / Appointments
-  const [bookings, setBookings] = useState(() => {
+  // 2. Customer Bookings / Appointments (Empty by default, real appointments loaded via API)
+  const [bookings, setBookings] = useState([]);
+  const [isLoadingBookings, setIsLoadingBookings] = useState(false);
+  const [bookingsError, setBookingsError] = useState(null);
+
+  // Phase 2 Cleanup: purge legacy mock booking localStorage key once on mount without deleting unrelated localStorage data
+  useEffect(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY_BOOKINGS);
-      if (saved) {
-        return JSON.parse(saved);
+      if (typeof window !== 'undefined' && window.localStorage) {
+        localStorage.removeItem(LEGACY_STORAGE_KEY_BOOKINGS);
       }
     } catch (e) {
-      console.error('Failed to parse saved bookings from localStorage', e);
+      console.warn('Unable to clean legacy localStorage bookings:', e);
     }
-    return DEFAULT_BOOKINGS;
-  });
+  }, []);
 
   // 3. Admin Authentication State (Real HTTP-only Cookie JWT + Session restore via /auth/me)
   const [adminUser, setAdminUser] = useState(null);
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
 
-  // Restore authenticated session on mount using /api/v1/auth/me
+  // Restore authenticated session only on admin routes to prevent public 401 console errors
   useEffect(() => {
     let isMounted = true;
-    async function restoreSession() {
+    const isTargetAdmin = () => {
+      if (typeof window === 'undefined') return false;
+      const hash = (window.location.hash || '').toLowerCase();
+      const path = (window.location.pathname || '').toLowerCase().replace(/\/$/, '');
+      return hash === '#admin' || path === '/admin';
+    };
+
+    async function checkAuth() {
+      if (!isTargetAdmin()) {
+        if (isMounted) setIsLoadingAuth(false);
+        return;
+      }
+
       try {
         const user = await apiAdminGetMe();
         if (isMounted && user) {
@@ -164,11 +142,25 @@ export function GarageProvider({ children }) {
         }
       }
     }
-    restoreSession();
+
+    checkAuth();
+
+    const handleRouteAuthCheck = () => {
+      if (isTargetAdmin() && !isAdminLoggedIn) {
+        setIsLoadingAuth(true);
+        checkAuth();
+      }
+    };
+
+    window.addEventListener('hashchange', handleRouteAuthCheck);
+    window.addEventListener('popstate', handleRouteAuthCheck);
+
     return () => {
       isMounted = false;
+      window.removeEventListener('hashchange', handleRouteAuthCheck);
+      window.removeEventListener('popstate', handleRouteAuthCheck);
     };
-  }, []);
+  }, [isAdminLoggedIn]);
 
   // Persist Data on change
   useEffect(() => {
@@ -179,14 +171,6 @@ export function GarageProvider({ children }) {
     }
   }, [data]);
 
-  // Persist Bookings on change
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY_BOOKINGS, JSON.stringify(bookings));
-    } catch (e) {
-      console.error('Error saving bookings to localStorage', e);
-    }
-  }, [bookings]);
 
   // ---------------- AUTH METHODS ----------------
   const adminLogin = async (email, password) => {
@@ -324,10 +308,12 @@ export function GarageProvider({ children }) {
 
   // ---------------- BOOKINGS / APPOINTMENTS CRUD ----------------
   const addBooking = (newBooking) => {
-    const id = newBooking.id || 'MHG-' + Math.floor(1000 + Math.random() * 9000);
+    if (!newBooking || !newBooking.id) {
+      console.warn('addBooking rejected: booking must have a valid identifier.');
+      return null;
+    }
     const bookingObj = {
       ...newBooking,
-      id,
       status: newBooking.status || 'Pending',
       createdAt: newBooking.createdAt || new Date().toISOString()
     };
@@ -383,9 +369,13 @@ export function GarageProvider({ children }) {
   // ---------------- BACKUP & FACTORY RESET ----------------
   const resetToDefaults = () => {
     setData(defaultGarageData);
-    setBookings(DEFAULT_BOOKINGS);
+    setBookings([]);
     localStorage.removeItem(STORAGE_KEY_DATA);
-    localStorage.removeItem(STORAGE_KEY_BOOKINGS);
+    try {
+      localStorage.removeItem(LEGACY_STORAGE_KEY_BOOKINGS);
+    } catch (e) {
+      console.warn('Error clearing legacy bookings key on reset', e);
+    }
   };
 
   const exportDataBackup = () => {
@@ -422,6 +412,8 @@ export function GarageProvider({ children }) {
   const value = {
     data,
     bookings,
+    isLoadingBookings,
+    bookingsError,
     isAdminLoggedIn,
     adminUser,
     isLoadingAuth,

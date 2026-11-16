@@ -7,18 +7,20 @@ const CAR_BRANDS = [
   { id: 'toyota', name: 'Toyota', logo: '/images/brands/toyota.svg' },
   { id: 'tata', name: 'Tata', logo: '/images/brands/tata.svg' },
   { id: 'honda', name: 'Honda', logo: '/images/brands/honda.svg' },
-  { id: 'mahindra', name: 'Mahindra', logo: '/images/brands/mahindra.png' },
+  { id: 'mahindra', name: 'Mahindra', logo: '/images/brands/mahindra.webp' },
   { id: 'kia', name: 'Kia', logo: '/images/brands/kia.svg' },
   { id: 'ford', name: 'Ford', logo: '/images/brands/ford.svg' },
   { id: 'renault', name: 'Renault', logo: '/images/brands/renault.svg' },
   { id: 'nissan', name: 'Nissan', logo: '/images/brands/nissan.svg' },
-  { id: 'skoda', name: 'Skoda', logo: '/images/brands/skoda.svg' },
+  { id: 'skoda', name: 'Skoda', logo: '/images/brands/skoda.webp' },
   { id: 'volkswagen', name: 'Volkswagen', logo: '/images/brands/volkswagen.svg' }
 ];
 
 export default function CarBrandsSection() {
+  const sectionRef = useRef(null);
   const trackRef = useRef(null);
   const [isPaused, setIsPaused] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   // Dragging & Swipe state refs
   const isDraggingRef = useRef(false);
@@ -29,6 +31,19 @@ export default function CarBrandsSection() {
   // Duplicate items for infinite seamless scroll
   const displayBrands = [...CAR_BRANDS, ...CAR_BRANDS];
 
+  // Pause scroll when off-screen to eliminate long main-thread tasks and layout reflow during initial page load
+  useEffect(() => {
+    if (!sectionRef.current) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      { rootMargin: '100px' }
+    );
+    observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   // Seamless scroll loop reset on manual drag or continuous scroll
   const handleScroll = () => {
     if (!trackRef.current) return;
@@ -38,17 +53,28 @@ export default function CarBrandsSection() {
       if (scrollLeft >= halfScroll) {
         trackRef.current.scrollLeft = scrollLeft - halfScroll;
       } else if (scrollLeft <= 0 && isDraggingRef.current) {
-        // If dragged before start
         trackRef.current.scrollLeft = halfScroll;
       }
     }
   };
 
-  // Continuous smooth auto-scroll animation loop
+  // Continuous smooth auto-scroll animation loop (only runs when visible and motion preferred)
   useEffect(() => {
-    const scrollStep = () => {
-      if (trackRef.current && !isPaused && !isDraggingRef.current) {
-        trackRef.current.scrollLeft += 0.75;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion || !isVisible || isPaused) return;
+
+    let lastTime = performance.now();
+    const scrollStep = (now) => {
+      const delta = Math.min((now - lastTime) / 16.67, 2.5); // Normalize to 60fps
+      lastTime = now;
+
+      if (trackRef.current && !isDraggingRef.current) {
+        trackRef.current.scrollLeft += 0.75 * delta;
+        const { scrollLeft, scrollWidth } = trackRef.current;
+        const halfScroll = scrollWidth / 2;
+        if (halfScroll > 0 && scrollLeft >= halfScroll) {
+          trackRef.current.scrollLeft = scrollLeft - halfScroll;
+        }
       }
       animationFrameIdRef.current = requestAnimationFrame(scrollStep);
     };
@@ -60,8 +86,7 @@ export default function CarBrandsSection() {
         cancelAnimationFrame(animationFrameIdRef.current);
       }
     };
-  }, [isPaused]);
-
+  }, [isPaused, isVisible]);
 
   // Mouse drag handlers
   const handleMouseDown = (e) => {
@@ -110,7 +135,12 @@ export default function CarBrandsSection() {
   };
 
   return (
-    <section className="car-brands-section" id="car-brands" aria-label="Car Brands We Service">
+    <section 
+      ref={sectionRef} 
+      className="car-brands-section" 
+      id="car-brands" 
+      aria-label="Car Brands We Service"
+    >
       <div className="container brands-container">
         {/* Header Block Matching Reference */}
         <div className="brands-header-row">
@@ -161,7 +191,10 @@ export default function CarBrandsSection() {
                     src={brand.logo}
                     alt={`${brand.name} logo`}
                     className="car-brand-logo-img"
+                    width="54"
+                    height="42"
                     loading="lazy"
+                    decoding="async"
                     draggable="false"
                   />
                 </div>

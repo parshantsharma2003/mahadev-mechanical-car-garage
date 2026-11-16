@@ -1,6 +1,7 @@
 import assert from 'assert';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
+import { assertSafeTestEnvironment, assertConnectedToSafeTestDb } from './testSafetyGuard.js';
 import { connectDB, disconnectDB } from '../src/config/db.js';
 import { app } from '../src/app.js';
 import {
@@ -22,7 +23,8 @@ import {
 } from '../src/utils/normalizers.js';
 import { seedDatabase } from '../src/scripts/seed.js';
 
-dotenv.config();
+// Pre-execution Production Safety Guard
+assertSafeTestEnvironment();
 
 let serverInstance = null;
 const TEST_PORT = 5055;
@@ -53,6 +55,7 @@ async function runTestSuite() {
     // 1. Database Connection Test
     await test('1. MongoDB Connection & Database Ping', async () => {
       const conn = await connectDB();
+      await assertConnectedToSafeTestDb();
       assert.strictEqual(mongoose.connection.readyState, 1, 'Mongoose should be connected (readyState 1)');
       const ping = await conn.connection.db.admin().ping();
       assert.ok(ping.ok === 1, 'MongoDB ping should return ok: 1');
@@ -322,12 +325,10 @@ async function runTestSuite() {
 
       const serviceCount1 = await Service.countDocuments();
       const galleryCount1 = await GalleryItem.countDocuments();
-      const reviewCount1 = await Review.countDocuments();
       const ownerCount1 = await User.countDocuments({ role: 'OWNER' });
 
       assert.ok(serviceCount1 >= 8, 'At least 8 core services should exist');
-      assert.ok(galleryCount1 >= 16, 'At least 16 gallery items should exist');
-      assert.ok(reviewCount1 >= 4, 'At least 4 reviews should exist');
+      assert.ok(galleryCount1 >= 6, 'At least 6 verified gallery items should exist');
       assert.ok(ownerCount1 >= 1, 'At least 1 OWNER account should exist');
 
       // Second execution must not duplicate anything
@@ -335,7 +336,6 @@ async function runTestSuite() {
       assert.strictEqual(stats2.owner, 'skipped', 'OWNER should be skipped on second seed');
       assert.strictEqual(stats2.services.created, 0, 'No duplicate services should be created');
       assert.strictEqual(stats2.gallery.created, 0, 'No duplicate gallery items should be created');
-      assert.strictEqual(stats2.reviews.created, 0, 'No duplicate reviews should be created');
 
       const serviceCount2 = await Service.countDocuments();
       assert.strictEqual(serviceCount1, serviceCount2, 'Service count must remain identical');

@@ -11,15 +11,37 @@ export const API_BASE = rawApiUrl
   ? (rawApiUrl.endsWith('/api/v1') ? rawApiUrl : `${rawApiUrl}/api/v1`)
   : '/api/v1';
 
-// In-memory CSRF token store
+// In-memory and sessionStorage CSRF token store
 let inMemoryCsrfToken = null;
 
 export function setCsrfToken(token) {
   inMemoryCsrfToken = token;
+  if (typeof sessionStorage !== 'undefined') {
+    try {
+      if (token) {
+        sessionStorage.setItem('mahadev_csrf_token', token);
+      } else {
+        sessionStorage.removeItem('mahadev_csrf_token');
+      }
+    } catch {
+      // Storage unavailable or disabled
+    }
+  }
 }
 
 export function getCsrfToken() {
   if (inMemoryCsrfToken) return inMemoryCsrfToken;
+  if (typeof sessionStorage !== 'undefined') {
+    try {
+      const stored = sessionStorage.getItem('mahadev_csrf_token');
+      if (stored) {
+        inMemoryCsrfToken = stored;
+        return stored;
+      }
+    } catch {
+      // Storage unavailable or disabled
+    }
+  }
   // Fallback: read from document.cookie if available
   if (typeof document !== 'undefined') {
     const match = document.cookie.match(new RegExp('(^|;\\s*)mahadev_csrf_token=([^;]*)'));

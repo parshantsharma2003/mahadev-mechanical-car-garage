@@ -102,8 +102,8 @@ export async function login(req, res) {
     const csrfToken = generateCsrfToken();
 
     // Set HTTP-only Auth Cookie and Readable CSRF Cookie
-    res.cookie(AUTH_COOKIE_NAME, token, getAuthCookieOptions());
-    res.cookie(CSRF_COOKIE_NAME, csrfToken, getCsrfCookieOptions());
+    res.cookie(AUTH_COOKIE_NAME, token, getAuthCookieOptions(req));
+    res.cookie(CSRF_COOKIE_NAME, csrfToken, getCsrfCookieOptions(req));
 
     // Update lastLoginAt
     user.lastLoginAt = new Date();
@@ -176,11 +176,11 @@ export async function logout(req, res) {
 
     // Clear authentication & CSRF cookies
     res.clearCookie(AUTH_COOKIE_NAME, {
-      ...getAuthCookieOptions(),
+      ...getAuthCookieOptions(req),
       maxAge: 0
     });
     res.clearCookie(CSRF_COOKIE_NAME, {
-      ...getCsrfCookieOptions(),
+      ...getCsrfCookieOptions(req),
       maxAge: 0
     });
 
@@ -206,6 +206,14 @@ export async function logout(req, res) {
  */
 export async function getMe(req, res) {
   const user = req.user;
+
+  // Ensure a valid CSRF token exists for this authenticated session
+  let csrfToken = req.cookies?.[CSRF_COOKIE_NAME];
+  if (!csrfToken) {
+    csrfToken = generateCsrfToken();
+    res.cookie(CSRF_COOKIE_NAME, csrfToken, getCsrfCookieOptions(req));
+  }
+
   return res.status(200).json({
     success: true,
     data: {
@@ -217,7 +225,8 @@ export async function getMe(req, res) {
         phone: user.phone || null,
         lastLoginAt: user.lastLoginAt || null,
         createdAt: user.createdAt
-      }
+      },
+      csrfToken
     }
   });
 }
@@ -290,8 +299,8 @@ export async function changePassword(req, res) {
     });
     const csrfToken = generateCsrfToken();
 
-    res.cookie(AUTH_COOKIE_NAME, token, getAuthCookieOptions());
-    res.cookie(CSRF_COOKIE_NAME, csrfToken, getCsrfCookieOptions());
+    res.cookie(AUTH_COOKIE_NAME, token, getAuthCookieOptions(req));
+    res.cookie(CSRF_COOKIE_NAME, csrfToken, getCsrfCookieOptions(req));
 
     // Audit log
     await createAuditRecord({

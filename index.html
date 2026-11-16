@@ -17,11 +17,59 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Preload critical hero assets for instant rendering without loading delay -->
-    <link rel="preload" href="/images/scorpio-n-hero.png" as="image" fetchpriority="high" />
-    <link rel="preload" href="/models/scorpio-n-black.glb" as="fetch" crossorigin="anonymous" fetchpriority="high" />
+    <!-- Preload critical hero LCP image in modern WebP format for sub-second LCP -->
+    <link rel="preload" href="/images/scorpio-n-hero.webp" as="image" type="image/webp" fetchpriority="high" />
+    <link rel="canonical" href="https://mahadev-mechanical-car-garage.vercel.app/" />
     
     <link rel="icon" type="image/png" href="/images/logo.png" />
+    
+    <!-- Structured Data (JSON-LD) for Local Automotive Business -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "AutoRepair",
+      "name": "Mahadev Mechanical Car Garage",
+      "image": "https://mahadev-mechanical-car-garage.vercel.app/images/logo.png",
+      "@id": "https://mahadev-mechanical-car-garage.vercel.app/#autorepair",
+      "url": "https://mahadev-mechanical-car-garage.vercel.app/",
+      "telephone": "+918295669463",
+      "priceRange": "₹₹",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Near JK Garden, Gohana–Panipat Road",
+        "addressLocality": "Gohana",
+        "addressRegion": "Haryana",
+        "postalCode": "131301",
+        "addressCountry": "IN"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 29.1471882,
+        "longitude": 76.716434
+      },
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday"
+          ],
+          "opens": "09:00",
+          "closes": "19:30"
+        },
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": "Sunday",
+          "opens": "10:00",
+          "closes": "16:00"
+        }
+      ]
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>

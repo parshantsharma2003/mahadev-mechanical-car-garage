@@ -7,8 +7,10 @@ export default function ConnectWithUsSection() {
   const contact = data.contact || {};
   const social = contact.social || {};
 
+  const sectionRef = useRef(null);
   const trackRef = useRef(null);
   const [isPaused, setIsPaused] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const isDraggingRef = useRef(false);
   const startXRef = useRef(0);
   const scrollLeftStartRef = useRef(0);
@@ -89,13 +91,32 @@ export default function ConnectWithUsSection() {
   // Tripled list for infinite seamless marquee loop on mobile view
   const mobileChannels = [...channels, ...channels, ...channels];
 
-  // Continuous auto-scrolling loop ONLY active in mobile phone view (< 768px)
+  // Pause scroll when off-screen to eliminate long main-thread tasks and layout reflow
+  useEffect(() => {
+    if (!sectionRef.current) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      { rootMargin: '100px' }
+    );
+    observer.observe(sectionRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  // Continuous auto-scrolling loop ONLY active in mobile phone view (< 768px) when visible
   useEffect(() => {
     const isMobileViewport = () => window.innerWidth < 768;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion || !isVisible || isPaused || !isMobileViewport()) return;
 
-    const scrollStep = () => {
-      if (isMobileViewport() && trackRef.current && !isPaused && !isDraggingRef.current) {
-        trackRef.current.scrollLeft += 0.85;
+    let lastTime = performance.now();
+    const scrollStep = (now) => {
+      const delta = Math.min((now - lastTime) / 16.67, 2.5);
+      lastTime = now;
+
+      if (isMobileViewport() && trackRef.current && !isDraggingRef.current) {
+        trackRef.current.scrollLeft += 0.85 * delta;
 
         // Seamless loop reset when 1 complete set scrolls
         const { scrollLeft, scrollWidth } = trackRef.current;
@@ -127,7 +148,7 @@ export default function ConnectWithUsSection() {
       }
       window.removeEventListener('resize', handleResize);
     };
-  }, [isPaused]);
+  }, [isPaused, isVisible]);
 
   // Touch Swipe Handlers for mobile
   const handleTouchStart = (e) => {
@@ -155,7 +176,12 @@ export default function ConnectWithUsSection() {
   };
 
   return (
-    <section className="connect-section" id="connect" aria-label="Connect With Us">
+    <section 
+      ref={sectionRef} 
+      className="connect-section" 
+      id="connect" 
+      aria-label="Connect With Us"
+    >
       <div className="container">
         {/* Eyebrow with flanking red lines */}
         <div className="connect-eyebrow-wrapper">
@@ -195,7 +221,7 @@ export default function ConnectWithUsSection() {
                     rel="noopener noreferrer"
                     className={`connect-channel-item channel-${channel.id} ${isDuplicate ? 'channel-duplicate' : ''}`}
                     title={`Connect with us on ${channel.name}`}
-                    aria-label={channel.name}
+                    aria-label={`Connect with us on ${channel.name}`}
                   >
                     <div className="connect-icon-box">
                       {channel.icon}

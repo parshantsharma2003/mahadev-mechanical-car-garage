@@ -1,10 +1,10 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, lazy } from 'react';
 import { MapPin, Calendar, ClipboardList, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { useGarage } from '../context/GarageContext';
 import ScorpioFallback from './ScorpioFallback';
 import './HeroSection.css';
 
-import ScorpioScene from './ScorpioScene';
+const ScorpioScene = lazy(() => import('./ScorpioScene'));
 
 export default function HeroSection({ onOpenBooking }) {
   const { data } = useGarage();
@@ -14,11 +14,19 @@ export default function HeroSection({ onOpenBooking }) {
     <section id="hero" className="hero-section" aria-label="Hero Section">
       {/* Background with real workshop ambiance and subtle automotive gradient overlay */}
       <div className="hero-bg-wrapper">
-        <img 
-          src="https://images.unsplash.com/photo-1487754180451-c456f719a1fc?auto=format&fit=crop&w=1920&q=80" 
-          alt="Professional car mechanic working in modern workshop bay" 
-          className="hero-bg-img"
-        />
+        <picture>
+          <source srcSet="/images/periodic-service.webp" type="image/webp" />
+          <img 
+            src="/images/periodic-service.jpg" 
+            alt="Mahadev Mechanical Car Garage - Modern Workshop Bay" 
+            className="hero-bg-img"
+            width="900"
+            height="506"
+            loading="eager"
+            decoding="async"
+            fetchpriority="low"
+          />
+        </picture>
         <div className="hero-gradient-overlay" />
       </div>
 
@@ -31,7 +39,7 @@ export default function HeroSection({ onOpenBooking }) {
               <span className="hero-badge-pin">
                 <MapPin size={14} className="pin-icon" />
               </span>
-              <span className="hero-badge-text">{business.locationBadge || 'Palam Vihar, Gurugram'}</span>
+              <span className="hero-badge-text">{business.locationBadge || 'Gohana, Haryana • Near JK Garden'}</span>
             </div>
 
             {/* Main Headline (Preserved Exact Wording & Red Highlight) */}
@@ -42,7 +50,7 @@ export default function HeroSection({ onOpenBooking }) {
 
             {/* Subtitle */}
             <p className="hero-description">
-              {business.subTagline || 'Gurugram’s trusted multi-brand car workshop. Expert mechanics, genuine parts & upfront pricing.'}
+              {business.subTagline || 'Gohana’s trusted multi-brand car workshop. Expert mechanics, genuine parts & upfront pricing.'}
             </p>
 
             {/* Action Buttons (Desktop placement; on mobile ordered after 3D visual via CSS) */}

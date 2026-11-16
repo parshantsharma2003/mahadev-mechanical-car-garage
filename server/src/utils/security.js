@@ -13,17 +13,23 @@ export const CSRF_COOKIE_NAME = 'mahadev_csrf_token';
  *
  * @returns {import('express').CookieOptions}
  */
-export function getAuthCookieOptions() {
+export function getAuthCookieOptions(req) {
   const isProd = process.env.NODE_ENV === 'production';
-  const isCrossDomain = process.env.IS_CROSS_DOMAIN === 'true' || isProd;
-  const sameSiteSetting = process.env.COOKIE_SAME_SITE 
-    ? process.env.COOKIE_SAME_SITE.toLowerCase() 
-    : (isCrossDomain && isProd ? 'none' : 'lax');
+  const isHttps = req ? (req.secure || req.headers['x-forwarded-proto'] === 'https') : false;
+  const isLocalhost = req ? (req.hostname === 'localhost' || req.hostname === '127.0.0.1') : false;
+
+  const secureSetting = isLocalhost && !isHttps 
+    ? false 
+    : (process.env.COOKIE_SECURE !== undefined ? process.env.COOKIE_SECURE === 'true' : isProd);
+    
+  const sameSiteSetting = !secureSetting 
+    ? 'lax' 
+    : (process.env.COOKIE_SAME_SITE ? process.env.COOKIE_SAME_SITE.toLowerCase() : 'none');
 
   /** @type {import('express').CookieOptions} */
   const options = {
     httpOnly: true, // Prevents access from client-side JavaScript
-    secure: process.env.COOKIE_SECURE ? process.env.COOKIE_SECURE === 'true' : isProd,
+    secure: secureSetting,
     sameSite: sameSiteSetting,
     maxAge: 12 * 60 * 60 * 1000, // 12 hours
     path: '/'
@@ -41,19 +47,26 @@ export function getAuthCookieOptions() {
  * Double-submit pattern requires client JavaScript to read this cookie
  * and echo it in the X-CSRF-Token request header.
  *
+ * @param {import('express').Request} [req]
  * @returns {import('express').CookieOptions}
  */
-export function getCsrfCookieOptions() {
+export function getCsrfCookieOptions(req) {
   const isProd = process.env.NODE_ENV === 'production';
-  const isCrossDomain = process.env.IS_CROSS_DOMAIN === 'true' || isProd;
-  const sameSiteSetting = process.env.COOKIE_SAME_SITE 
-    ? process.env.COOKIE_SAME_SITE.toLowerCase() 
-    : (isCrossDomain && isProd ? 'none' : 'lax');
+  const isHttps = req ? (req.secure || req.headers['x-forwarded-proto'] === 'https') : false;
+  const isLocalhost = req ? (req.hostname === 'localhost' || req.hostname === '127.0.0.1') : false;
+
+  const secureSetting = isLocalhost && !isHttps 
+    ? false 
+    : (process.env.COOKIE_SECURE !== undefined ? process.env.COOKIE_SECURE === 'true' : isProd);
+    
+  const sameSiteSetting = !secureSetting 
+    ? 'lax' 
+    : (process.env.COOKIE_SAME_SITE ? process.env.COOKIE_SAME_SITE.toLowerCase() : 'none');
 
   /** @type {import('express').CookieOptions} */
   const options = {
     httpOnly: false, // Must be readable by client JS for double-submit header
-    secure: process.env.COOKIE_SECURE ? process.env.COOKIE_SECURE === 'true' : isProd,
+    secure: secureSetting,
     sameSite: sameSiteSetting,
     maxAge: 12 * 60 * 60 * 1000,
     path: '/'

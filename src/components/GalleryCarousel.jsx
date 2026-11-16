@@ -231,7 +231,10 @@ export default function GalleryCarousel() {
                     src={item.image} 
                     alt={item.title} 
                     className="gallery-img" 
+                    width="400"
+                    height="225"
                     loading="lazy" 
+                    decoding="async"
                     draggable="false"
                   />
                   {/* Elegant Expand Icon on Hover */}
@@ -249,15 +252,17 @@ export default function GalleryCarousel() {
         {/* Bottom Banner to View All Images */}
         <div className="gallery-bottom-strip">
           <span className="gallery-strip-text">
-            Showing 10 featured showcase photos. Want to see more mechanical overhauls?
+            Showing {homeItems.length} verified workshop photos.
           </span>
-          <button 
-            className="gallery-strip-btn"
-            onClick={() => setIsAllModalOpen(true)}
-          >
-            <Grid size={15} />
-            <span>Browse All {galleryItems.length} Photos ➔</span>
-          </button>
+          {galleryItems.length > 6 && (
+            <button 
+              className="gallery-strip-btn"
+              onClick={() => setIsAllModalOpen(true)}
+            >
+              <Grid size={15} />
+              <span>Browse All {galleryItems.length} Photos ➔</span>
+            </button>
+          )}
         </div>
       </div>
 
@@ -296,6 +301,9 @@ export default function GalleryCarousel() {
                 src={currentLightboxItem.image} 
                 alt={currentLightboxItem.title} 
                 className="lightbox-full-img" 
+                width="900"
+                height="506"
+                decoding="async"
               />
               
               {/* Prev / Next Image Controls */}
@@ -395,7 +403,10 @@ export default function GalleryCarousel() {
                     src={item.image} 
                     alt={item.title} 
                     className="all-grid-img" 
+                    width="400"
+                    height="225"
                     loading="lazy" 
+                    decoding="async"
                   />
                   <div className="all-grid-hover">
                     <div className="all-grid-zoom-cue">

@@ -1,34 +1,53 @@
 import React from 'react';
-import { Users, ShieldCheck, Star, Car } from 'lucide-react';
+import { ShieldCheck, Car, Zap, CheckCircle2 } from 'lucide-react';
+import { useGarage } from '../context/GarageContext';
 import './StatsBar.css';
 
+const ICON_MAP = {
+  ShieldCheck,
+  Car,
+  Zap,
+  CheckCircle: CheckCircle2,
+  CheckCircle2
+};
+
 export default function StatsBar() {
-  const statItems = [
+  const { data } = useGarage();
+  const rawStats = data?.stats || [];
+
+  const defaultStats = [
     {
       id: 1,
-      icon: Users,
-      value: "5000+",
-      label: "Happy Customers"
+      icon: ShieldCheck,
+      value: "100% Genuine",
+      label: "OEM & OES Parts"
     },
     {
       id: 2,
-      icon: ShieldCheck,
-      value: "Trusted",
-      label: "Car Owners in Haryana"
+      icon: Car,
+      value: "Multibrand",
+      label: "Complete Service Bay"
     },
     {
       id: 3,
-      icon: Star,
-      value: "4.8/5",
-      label: "Customer Rating"
+      icon: Zap,
+      value: "Japanese Tech",
+      label: "Carbon Cleaning"
     },
     {
       id: 4,
-      icon: Car,
-      value: "All Brands",
-      label: "Servicing & Repair"
+      icon: CheckCircle2,
+      value: "Transparent",
+      label: "Digital Job Cards"
     }
   ];
+
+  const statItems = rawStats.length === 4 ? rawStats.map(s => ({
+    id: s.id,
+    icon: ICON_MAP[s.icon] || ShieldCheck,
+    value: s.number,
+    label: s.label
+  })) : defaultStats;
 
   return (
     <div className="stats-bar-wrapper">

@@ -1,0 +1,26 @@
+# Mahadev Mechanical Car Garage
+
+> Complete Car Care Under One Roof in Gohana, Haryana. Modern multi-brand car workshop specializing in dealer-standard mechanical service, Japanese-tech engine decarbonization, automated AC servicing, car detailing, and OBD-II computerized diagnostics.
+
+## Business Overview
+- **Name**: Mahadev Mechanical Car Garage
+- **Location**: Near JK Garden, Gohana–Panipat Road, Gohana, Haryana 131301, India
+- **Phone**: +91 82956 69463
+- **WhatsApp**: +91 82956 69463
+- **Website**: https://mahadev-mechanical-car-garage.vercel.app/
+- **Established**: 2018
+- **Operating Hours**:
+  - Monday – Saturday: 09:00 AM – 07:30 PM
+  - Sunday: 10:00 AM – 04:00 PM (By Appointment Only)
+
+## Key Workshop Services
+- [General Car Service](https://mahadev-mechanical-car-garage.vercel.app/#services): Synthetic engine oil change, OEM oil/air filters, fluid top-ups, spark plugs, and comprehensive 40-point safety inspection.
+- [Engine Carbon Cleaning](https://mahadev-mechanical-car-garage.vercel.app/#services): In-chassis hydrogen decarbonization using Japanese-tech machinery. Cleans combustion chambers and intake valves without dismantling the engine.
+- [Automated AC Servicing](https://mahadev-mechanical-car-garage.vercel.app/#services): Automated refrigerant recovery, deep vacuum leak testing, compressor oil top-up, and precise R134a gas recharge.
+- [Car Detailing & Foam Wash](https://mahadev-mechanical-car-garage.vercel.app/#services): Dual-action compounding, swirl and scratch correction, high-temp interior steam sanitization, and pH-neutral snow foam wash.
+- [OBD-II Computer Diagnostics](https://mahadev-mechanical-car-garage.vercel.app/#services): ECU scanning, live sensor diagnostics, check engine light analysis, and alternator/battery testing.
+- [Brakes & Suspension](https://mahadev-mechanical-car-garage.vercel.app/#services): Disc rotor truing, caliper overhaul, OEM brake pads, hydraulic bleeding, and shock absorber replacement.
+- [Denting & Paint Correction](https://mahadev-mechanical-car-garage.vercel.app/#services): Panel beating, dent puller repair, precision color matching, and heated high-gloss clear coat.
+
+## Supported Vehicle Brands
+Maruti Suzuki, Hyundai, Tata Motors, Mahindra, Toyota, Honda, Kia, Ford, Renault, Nissan, Skoda, Volkswagen, and other multi-brand passenger vehicles.

@@ -33,6 +33,7 @@ dist-ssr
 server/.env
 server/.env.*
 !server/.env.example
+!server/.env.test.example
 
 # Temporary / backup files
 *.bak

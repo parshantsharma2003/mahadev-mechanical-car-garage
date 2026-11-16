@@ -117,12 +117,12 @@
 }
 
 .stat-label {
-  font-size: 0.625rem;
+  font-size: 0.6875rem;
   font-weight: 600;
-  color: #4B5563;
-  line-height: 1.2;
+  color: #1F2937;
+  line-height: 1.25;
   margin-top: 0.15rem;
-  max-width: 80px;
+  max-width: 90px;
 }
 
 @media (min-width: 480px) {

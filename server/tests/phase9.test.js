@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import bcrypt from 'bcryptjs';
 import mongoose from 'mongoose';
 import { randomUUID } from 'crypto';
+import { assertSafeTestEnvironment, assertConnectedToSafeTestDb } from './testSafetyGuard.js';
 import { connectDB, disconnectDB } from '../src/config/db.js';
 import { app } from '../src/app.js';
 import {
@@ -20,7 +21,8 @@ import {
   SupplierPayment
 } from '../src/models/index.js';
 
-dotenv.config();
+// Pre-execution Production Safety Guard
+assertSafeTestEnvironment();
 
 const TEST_PORT = 5093;
 const BASE_URL = `http://127.0.0.1:${TEST_PORT}`;
@@ -81,6 +83,7 @@ async function runPhase9Tests() {
 
   try {
     await connectDB();
+    await assertConnectedToSafeTestDb();
 
     // Start Express HTTP Test Server
     await new Promise((resolve) => {

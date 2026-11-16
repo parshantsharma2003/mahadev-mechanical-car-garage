@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://mahadevgarage.com/sitemap.xml
+Sitemap: https://mahadev-mechanical-car-garage.vercel.app/sitemap.xml

@@ -33,15 +33,10 @@ class SceneErrorBoundary extends React.Component {
 export default function ScorpioScene() {
   const [webGLSupported] = useState(() => isWebGLAvailable());
   const [isModelReady, setIsModelReady] = useState(false);
-  const [showFallback, setShowFallback] = useState(true);
   const [isInteracting, setIsInteracting] = useState(false);
 
-  // When model is ready, gracefully transition and then unmount fallback to eliminate duplicate overhead
   const handleModelReady = () => {
     setIsModelReady(true);
-    setTimeout(() => {
-      setShowFallback(false);
-    }, 450);
   };
 
   if (!webGLSupported) {
@@ -53,19 +48,20 @@ export default function ScorpioScene() {
       className="scorpio-canvas-wrapper" 
       aria-label="Interactive 3D model of Glossy Black Mahindra Scorpio-N SUV. Drag horizontally to rotate 360 degrees."
     >
-      {/* 1. Fast, preloaded visual placeholder guarantees the car NEVER disappears during reload or initial fetch */}
-      {showFallback && (
-        <div className={`scorpio-fallback-container ${isModelReady ? 'is-hidden' : 'is-visible'}`}>
-          <ScorpioFallback />
-        </div>
-      )}
+      {/* 1. Fast, preloaded visual placeholder guarantees the car NEVER disappears and LCP element remains in DOM */}
+      <div 
+        className={`scorpio-fallback-container ${isModelReady ? 'is-faded' : 'is-visible'}`} 
+        aria-hidden={isModelReady}
+      >
+        <ScorpioFallback />
+      </div>
 
-      {/* 2. Interactive 3D WebGL Canvas */}
+      {/* 2. Interactive 3D WebGL Canvas fades smoothly over fallback */}
       <SceneErrorBoundary fallback={<ScorpioFallback />}>
         <div className={`scorpio-three-container ${isModelReady ? 'is-visible' : 'is-hidden'}`}>
           <Canvas
             className="scorpio-three-canvas"
-            dpr={[1, 2]}
+            dpr={[1, 1.5]}
             gl={{ 
               antialias: true, 
               alpha: true,

@@ -1,8 +1,8 @@
 import React from 'react';
-import { Wrench, ShieldCheck, Clock, Play } from 'lucide-react';
+import { Wrench, ShieldCheck, Clock, MapPin, CheckCircle2 } from 'lucide-react';
 import './WhyChooseUs.css';
 
-export default function WhyChooseUs({ onOpenVideo }) {
+export default function WhyChooseUs() {
   const features = [
     {
       id: 1,
@@ -33,11 +33,18 @@ export default function WhyChooseUs({ onOpenVideo }) {
         <div className="why-us-card">
           {/* Background image & gradient overlay */}
           <div className="why-us-bg-wrapper">
-            <img 
-              src="https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=1400&q=80" 
-              alt="Automotive workshop equipment and mechanic servicing car" 
-              className="why-us-bg-img"
-            />
+            <picture>
+              <source srcSet="/images/periodic-service.webp" type="image/webp" />
+              <img 
+                src="/images/periodic-service.jpg" 
+                alt="Automotive workshop equipment and mechanic servicing car" 
+                className="why-us-bg-img"
+                width="900"
+                height="506"
+                loading="lazy"
+                decoding="async"
+              />
+            </picture>
             <div className="why-us-overlay"></div>
           </div>
 
@@ -60,19 +67,27 @@ export default function WhyChooseUs({ onOpenVideo }) {
               })}
             </div>
 
-            {/* Right Column: Video Play Button */}
-            <div className="why-us-video-col">
-              <button 
-                className="video-play-btn" 
-                onClick={onOpenVideo}
-                aria-label="Play Workshop Video Tour"
-              >
-                <div className="play-pulse-ring"></div>
-                <div className="play-btn-circle">
-                  <Play size={26} className="play-triangle" fill="#111827" />
+            {/* Right Column: Genuine Workshop Location Badge */}
+            <div className="why-us-location-col">
+              <div className="why-location-badge-box">
+                <div className="why-badge-header">
+                  <div className="why-badge-icon-wrap">
+                    <MapPin size={20} className="why-badge-pin" />
+                  </div>
+                  <span className="why-badge-status">
+                    <CheckCircle2 size={13} className="why-status-check" />
+                    Verified Bay
+                  </span>
                 </div>
-              </button>
-              <span className="video-btn-label">Watch Workshop Tour</span>
+                <h3 className="why-location-title">Workshop Bay</h3>
+                <p className="why-location-address">
+                  Near JK Garden, Gohana–Panipat Rd,<br />
+                  Gohana, Haryana 131301
+                </p>
+                <div className="why-location-hours">
+                  <span>Mon – Sat: 9:00 AM – 7:30 PM</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>

@@ -2,6 +2,7 @@ import assert from 'assert';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
+import { assertSafeTestEnvironment, assertConnectedToSafeTestDb } from './testSafetyGuard.js';
 import { connectDB, disconnectDB } from '../src/config/db.js';
 import { app } from '../src/app.js';
 import { User, AuditLog } from '../src/models/index.js';
@@ -11,7 +12,8 @@ import {
   signAuthToken
 } from '../src/utils/security.js';
 
-dotenv.config();
+// Pre-execution Production Safety Guard
+assertSafeTestEnvironment();
 
 const TEST_PORT = 5066;
 const BASE_URL = `http://127.0.0.1:${TEST_PORT}`;
@@ -71,6 +73,7 @@ async function runPhase2Tests() {
 
   try {
     await connectDB();
+    await assertConnectedToSafeTestDb();
 
     serverInstance = await new Promise((resolve) => {
       const s = app.listen(TEST_PORT, () => resolve(s));
