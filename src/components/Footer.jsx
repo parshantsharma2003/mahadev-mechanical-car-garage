@@ -5,7 +5,7 @@ import './Footer.css';
 
 const CURRENT_YEAR = new Date().getFullYear();
 
-export default function Footer({ onOpenBooking }) {
+export default function Footer({ onOpenBooking, onNavigate }) {
   const { data } = useGarage();
   const contact = data.contact;
   const services = data.services;
@@ -14,6 +14,21 @@ export default function Footer({ onOpenBooking }) {
   const phoneUrl = `tel:+91${contact.phone}`;
   const directionsUrl = contact.googleMapsDirectionsUrl;
 
+  const serviceSlugMap = {
+    "general-car-service": "/car-service-gohana",
+    "car-washing": "/car-washing-gohana",
+    "car-detailing": "/car-detailing-gohana",
+    "ac-servicing": "/car-ac-service-gohana",
+    "interior-cleaning": "/car-interior-cleaning-gohana"
+  };
+
+  const handleLink = (e, path) => {
+    if (onNavigate) {
+      e.preventDefault();
+      onNavigate(path);
+    }
+  };
+
   return (
     <footer id="contact" className="site-footer">
       <div className="container">
@@ -21,7 +36,12 @@ export default function Footer({ onOpenBooking }) {
         <div className="footer-grid">
           {/* Col 1: Garage Identity */}
           <div className="footer-col col-brand">
-            <a href="#hero" className="footer-brand-logo mb-3" aria-label="Mahadev Mechanical Car Garage Home">
+            <a 
+              href="/" 
+              className="footer-brand-logo mb-3" 
+              aria-label="Mahadev Mechanical Car Garage Home"
+              onClick={(e) => handleLink(e, '/')}
+            >
               <div className="footer-logo-card">
                 <picture>
                   <source srcSet="/images/logo.webp" type="image/webp" />
@@ -39,10 +59,20 @@ export default function Footer({ onOpenBooking }) {
             </a>
             
             <p className="footer-about-text">
-              Gohana's modern multi-brand car workshop. Dealer-standard mechanical service, Japanese-tech engine decarbonization, foam wash, and automated AC servicing.
+              Gohana's trusted multi-brand car workshop. Dealer-standard mechanical service, Japanese-tech engine decarbonization, foam wash, and automated AC servicing.
             </p>
 
-            <div className="footer-trust-tag">
+            <div className="footer-quick-links-nav">
+              <a href="/about" onClick={(e) => handleLink(e, '/about')} className="footer-mini-link">About Us</a>
+              <span className="dot-sep">•</span>
+              <a href="/services" onClick={(e) => handleLink(e, '/services')} className="footer-mini-link">All Services</a>
+              <span className="dot-sep">•</span>
+              <a href="/gallery" onClick={(e) => handleLink(e, '/gallery')} className="footer-mini-link">Gallery</a>
+              <span className="dot-sep">•</span>
+              <a href="/reviews" onClick={(e) => handleLink(e, '/reviews')} className="footer-mini-link">Reviews</a>
+            </div>
+
+            <div className="footer-trust-tag mt-3">
               <ShieldCheck size={18} className="shield-green" />
               <span>100% Genuine Spare Parts Guarantee</span>
             </div>
@@ -52,14 +82,21 @@ export default function Footer({ onOpenBooking }) {
           <div className="footer-col">
             <h3 className="footer-col-title">Workshop Services</h3>
             <ul className="footer-links-list">
-              {services.map((s) => (
-                <li key={s.id}>
-                  <a href="#services" className="footer-link">
-                    <ChevronRight size={14} className="link-arrow" />
-                    <span>{s.title}</span>
-                  </a>
-                </li>
-              ))}
+              {services.slice(0, 6).map((s) => {
+                const targetUrl = serviceSlugMap[s.id] || "/services";
+                return (
+                  <li key={s.id}>
+                    <a 
+                      href={targetUrl} 
+                      className="footer-link"
+                      onClick={(e) => handleLink(e, targetUrl)}
+                    >
+                      <ChevronRight size={14} className="link-arrow" />
+                      <span>{s.title}</span>
+                    </a>
+                  </li>
+                );
+              })}
             </ul>
           </div>
 

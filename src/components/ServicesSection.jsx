@@ -3,7 +3,7 @@ import { ArrowRight, ChevronLeft, ChevronRight, CheckCircle2, Sparkles } from 'l
 import { useGarage } from '../context/GarageContext';
 import './ServicesSection.css';
 
-export default function ServicesSection({ onSelectService }) {
+export default function ServicesSection({ onSelectService, onNavigate }) {
   const { data } = useGarage();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -13,6 +13,14 @@ export default function ServicesSection({ onSelectService }) {
   const isDraggingRef = useRef(false);
 
   const services = data.services;
+
+  const serviceSlugMap = {
+    "general-car-service": "/car-service-gohana",
+    "car-washing": "/car-washing-gohana",
+    "car-detailing": "/car-detailing-gohana",
+    "ac-servicing": "/car-ac-service-gohana",
+    "interior-cleaning": "/car-interior-cleaning-gohana"
+  };
 
   const scrollToItem = (index) => {
     if (!carouselTrackRef.current) return;
@@ -216,6 +224,21 @@ export default function ServicesSection({ onSelectService }) {
 
                   {/* Bottom Action Bar */}
                   <div className="service-card-footer">
+                    {serviceSlugMap[service.id] && (
+                      <a
+                        href={serviceSlugMap[service.id]}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (onNavigate) {
+                            e.preventDefault();
+                            onNavigate(serviceSlugMap[service.id]);
+                          }
+                        }}
+                        className="service-detail-link"
+                      >
+                        Details ➔
+                      </a>
+                    )}
                     <button 
                       type="button"
                       className="service-action-pill"

@@ -1,0 +1,183 @@
+/* Reviews Page Styles - Mahadev Mechanical Car Garage */
+
+.reviews-page {
+  background-color: #FFFFFF;
+  color: #0F172A;
+}
+
+.reviews-hero-section {
+  padding: 3.5rem 0;
+  background: linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 100%);
+  border-bottom: 1px solid #E2E8F0;
+  text-align: center;
+}
+
+.reviews-hero-content {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.reviews-hero-title {
+  font-family: var(--font-heading);
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: #0F172A;
+  line-height: 1.25;
+  margin-bottom: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .reviews-hero-title {
+    font-size: 2.75rem;
+  }
+}
+
+.reviews-hero-sub {
+  font-size: 1.05rem;
+  color: #475569;
+  line-height: 1.6;
+}
+
+.reviews-main-section {
+  padding: 4.5rem 0;
+}
+
+.reviews-empty-box {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: var(--radius-xl);
+  padding: 3.5rem 2rem;
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto 3.5rem;
+}
+
+.google-icon-bubble {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+}
+
+.empty-h2 {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0F172A;
+  margin-bottom: 0.75rem;
+}
+
+.empty-p {
+  font-size: 0.95rem;
+  color: #475569;
+  line-height: 1.6;
+  max-width: 580px;
+  margin: 0 auto 2rem;
+}
+
+.btn-leave-review {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 48px;
+  padding: 0.75rem 1.5rem;
+  background: #0F172A;
+  color: #FFFFFF;
+  border-radius: var(--radius-md);
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all var(--transition-fast);
+}
+
+.btn-leave-review:hover {
+  background: #DC2626;
+  transform: translateY(-1px);
+}
+
+.reviews-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-bottom: 3.5rem;
+}
+
+@media (min-width: 768px) {
+  .reviews-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.review-card-item {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: var(--radius-xl);
+  padding: 1.75rem;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.review-stars-row {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.review-text {
+  font-size: 0.95rem;
+  color: #334155;
+  line-height: 1.6;
+  margin: 0 0 1.25rem;
+  font-style: italic;
+}
+
+.review-author-box strong {
+  display: block;
+  font-size: 0.95rem;
+  color: #0F172A;
+}
+
+.review-vehicle {
+  font-size: 0.8125rem;
+  color: #64748B;
+}
+
+.reviews-cta-strip {
+  background: #0F172A;
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  align-items: center;
+  text-align: center;
+}
+
+@media (min-width: 640px) {
+  .reviews-cta-strip {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+  }
+}
+
+.reviews-cta-strip h3 {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin-bottom: 0.25rem;
+}
+
+.reviews-cta-strip p {
+  font-size: 0.875rem;
+  color: #94A3B8;
+  margin: 0;
+}

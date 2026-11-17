@@ -6,7 +6,7 @@ import './HeroSection.css';
 
 const ScorpioScene = lazy(() => import('./ScorpioScene'));
 
-export default function HeroSection({ onOpenBooking }) {
+export default function HeroSection({ onOpenBooking, onNavigate }) {
   const { data } = useGarage();
   const business = data.business || {};
 
@@ -66,7 +66,13 @@ export default function HeroSection({ onOpenBooking }) {
               </button>
 
               <a 
-                href="#services" 
+                href="/services" 
+                onClick={(e) => {
+                  if (onNavigate) {
+                    e.preventDefault();
+                    onNavigate('/services');
+                  }
+                }}
                 className="btn btn-outline hero-btn-services"
                 aria-label="View Services"
               >

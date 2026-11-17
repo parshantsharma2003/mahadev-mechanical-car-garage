@@ -79,7 +79,32 @@
   line-height: 1.6;
   color: #CBD5E1;
   margin-top: 1rem;
-  margin-bottom: 1.25rem;
+  margin-bottom: 0.85rem;
+}
+
+.footer-quick-links-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+  font-size: 0.8125rem;
+  margin-bottom: 1.15rem;
+}
+
+.footer-mini-link {
+  color: #94A3B8;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.footer-mini-link:hover {
+  color: #EF4444;
+  text-decoration: underline;
+}
+
+.dot-sep {
+  color: #64748B;
+  font-size: 0.65rem;
 }
 
 .footer-trust-tag {

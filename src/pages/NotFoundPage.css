@@ -1,0 +1,87 @@
+/* 404 Page Styles - Mahadev Mechanical Car Garage */
+
+.notfound-page {
+  background-color: #F8FAFC;
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  padding: 4rem 0;
+}
+
+.notfound-container {
+  display: flex;
+  justify-content: center;
+}
+
+.notfound-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: var(--radius-2xl);
+  padding: 3.5rem 2rem;
+  max-width: 620px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+}
+
+.notfound-code {
+  font-family: var(--font-heading);
+  font-size: 5rem;
+  font-weight: 800;
+  color: #DC2626;
+  line-height: 1;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.notfound-title {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 800;
+  color: #0F172A;
+  margin-bottom: 1rem;
+}
+
+.notfound-desc {
+  font-size: 1rem;
+  color: #475569;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.notfound-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 2.5rem;
+}
+
+.notfound-btn {
+  min-height: 48px;
+  padding: 0.65rem 1.25rem;
+}
+
+.notfound-support-note {
+  border-top: 1px solid #E2E8F0;
+  padding-top: 1.5rem;
+  font-size: 0.875rem;
+  color: #64748B;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.notfound-call-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: #DC2626;
+  text-decoration: none;
+}
+
+.notfound-call-link:hover {
+  text-decoration: underline;
+}

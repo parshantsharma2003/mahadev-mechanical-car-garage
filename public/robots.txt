@@ -1,4 +1,21 @@
 User-agent: *
 Allow: /
 
+# AI Search & Discovery Crawlers
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+# Canonical XML Sitemap
 Sitemap: https://mahadev-mechanical-car-garage.vercel.app/sitemap.xml

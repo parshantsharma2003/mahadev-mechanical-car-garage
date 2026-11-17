@@ -3,7 +3,7 @@ import { Phone, Menu, X, Calendar, MapPin, ChevronRight } from 'lucide-react';
 import { useGarage } from '../context/GarageContext';
 import './Navbar.css';
 
-export default function Navbar({ onOpenBooking }) {
+export default function Navbar({ onOpenBooking, onNavigate }) {
   const { data } = useGarage();
   const contact = data.contact;
   const [isScrolled, setIsScrolled] = useState(false);
@@ -18,16 +18,20 @@ export default function Navbar({ onOpenBooking }) {
   }, []);
 
   const navLinks = [
-    { label: 'Home', href: '#hero' },
-    { label: 'Services', href: '#services' },
-    { label: 'Gallery', href: '#gallery' },
-    { label: 'Why Choose Us', href: '#why-us' },
-    { label: 'Reviews', href: '#reviews' },
-    { label: 'Location', href: '#contact' }
+    { label: 'Home', href: '/' },
+    { label: 'Services', href: '/services' },
+    { label: 'About', href: '/about' },
+    { label: 'Gallery', href: '/gallery' },
+    { label: 'Reviews', href: '/reviews' },
+    { label: 'Contact', href: '/contact' }
   ];
 
-  const handleLinkClick = () => {
+  const handleLinkClick = (e, href) => {
     setMobileMenuOpen(false);
+    if (onNavigate) {
+      e.preventDefault();
+      onNavigate(href);
+    }
   };
 
   return (
@@ -35,7 +39,12 @@ export default function Navbar({ onOpenBooking }) {
       <header className={`navbar-header ${isScrolled ? 'scrolled' : ''}`}>
         <div className="container navbar-container">
           {/* Brand Logo */}
-          <a href="#hero" className="brand-logo" aria-label="Mahadev Mechanical Car Garage Home">
+          <a 
+            href="/" 
+            className="brand-logo" 
+            aria-label="Mahadev Mechanical Car Garage Home"
+            onClick={(e) => handleLinkClick(e, '/')}
+          >
             <picture>
               <source srcSet="/images/logo-transparent.webp" type="image/webp" />
               <img 
@@ -52,7 +61,12 @@ export default function Navbar({ onOpenBooking }) {
           {/* Desktop Navigation Links */}
           <nav className="desktop-nav" aria-label="Main Navigation">
             {navLinks.map((link) => (
-              <a key={link.href} href={link.href} className="nav-link">
+              <a 
+                key={link.href} 
+                href={link.href} 
+                className="nav-link"
+                onClick={(e) => handleLinkClick(e, link.href)}
+              >
                 {link.label}
               </a>
             ))}
@@ -95,7 +109,12 @@ export default function Navbar({ onOpenBooking }) {
       <div className={`mobile-drawer-overlay ${mobileMenuOpen ? 'open' : ''}`} onClick={() => setMobileMenuOpen(false)}>
         <div className="mobile-drawer" onClick={(e) => e.stopPropagation()}>
           <div className="drawer-header">
-            <a href="#hero" onClick={() => setMobileMenuOpen(false)} className="drawer-brand-logo" aria-label="Mahadev Mechanical Car Garage Home">
+            <a 
+              href="/" 
+              onClick={(e) => handleLinkClick(e, '/')} 
+              className="drawer-brand-logo" 
+              aria-label="Mahadev Mechanical Car Garage Home"
+            >
               <picture>
                 <source srcSet="/images/logo-transparent.webp" type="image/webp" />
                 <img 
@@ -124,7 +143,7 @@ export default function Navbar({ onOpenBooking }) {
                   key={link.href} 
                   href={link.href} 
                   className="drawer-nav-item" 
-                  onClick={handleLinkClick}
+                  onClick={(e) => handleLinkClick(e, link.href)}
                 >
                   <span>{link.label}</span>
                   <ChevronRight size={18} className="drawer-arrow" />

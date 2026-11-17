@@ -1,19 +1,20 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { GarageProvider, useGarage } from './context/GarageContext';
 import Navbar from './components/Navbar';
-import HeroSection from './components/HeroSection';
-import StatsBar from './components/StatsBar';
-import ServicesSection from './components/ServicesSection';
-import CarBrandsSection from './components/CarBrandsSection';
-import WhyChooseUs from './components/WhyChooseUs';
-import GalleryCarousel from './components/GalleryCarousel';
-import TestimonialsSection from './components/TestimonialsSection';
-import ConnectWithUsSection from './components/ConnectWithUsSection';
-import CtaBanner from './components/CtaBanner';
 import Footer from './components/Footer';
 import BottomBar from './components/BottomBar';
+import HomePage from './pages/HomePage';
+import { DEDICATED_SERVICES } from './config/seoData';
 
-// Code-split heavy interactive modals & admin modules
+// Code-split dedicated subpages & heavy interactive modals
+const ServicesPage = lazy(() => import('./pages/ServicesPage'));
+const ServiceDetailPage = lazy(() => import('./pages/ServiceDetailPage'));
+const AboutPage = lazy(() => import('./pages/AboutPage'));
+const ContactPage = lazy(() => import('./pages/ContactPage'));
+const GalleryPage = lazy(() => import('./pages/GalleryPage'));
+const ReviewsPage = lazy(() => import('./pages/ReviewsPage'));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
+
 const AppointmentModal = lazy(() => import('./components/AppointmentModal'));
 const VideoModal = lazy(() => import('./components/VideoModal'));
 const AdminLogin = lazy(() => import('./components/admin/AdminLogin'));
@@ -25,34 +26,99 @@ const isAdminRoute = () => {
   return hash === '#admin' || path === '/admin';
 };
 
+const getCleanPath = () => {
+  const path = (window.location.pathname || '/').toLowerCase().replace(/\/$/, '') || '/';
+  return path;
+};
+
 function GarageWebsiteApp() {
   const { isAdminLoggedIn, isLoadingAuth } = useGarage();
-  const [currentView, setCurrentView] = useState(() => {
-    return isAdminRoute() ? 'admin' : 'site';
-  });
+  const [currentPath, setCurrentPath] = useState(getCleanPath);
+  const [isAdminView, setIsAdminView] = useState(isAdminRoute);
 
-  const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [isBookingOpen, setIsBookingOpen] = useState(() => {
+    return getCleanPath() === '/book-appointment';
+  });
   const [selectedService, setSelectedService] = useState(null);
   const [isVideoOpen, setIsVideoOpen] = useState(false);
 
-  // Synchronize URL routing (both /admin and #admin) with view state
+  // Synchronize route changes from browser navigation (Back/Forward, address bar, popstate, hashchange)
   useEffect(() => {
-    const checkRoute = () => {
-      if (isAdminRoute()) {
-        setCurrentView('admin');
-        window.scrollTo(0, 0);
-      } else if (currentView === 'admin' && !isAdminRoute()) {
-        setCurrentView('site');
+    const handleRouteSync = () => {
+      const isNowAdmin = isAdminRoute();
+      setIsAdminView(isNowAdmin);
+
+      const path = getCleanPath();
+      setCurrentPath(path);
+
+      if (path === '/book-appointment') {
+        setIsBookingOpen(true);
+      }
+
+      // Handle anchor scrolling if hash is present
+      if (window.location.hash && window.location.hash !== '#admin') {
+        const targetId = window.location.hash.substring(1);
+        const el = document.getElementById(targetId);
+        if (el) {
+          setTimeout(() => el.scrollIntoView({ behavior: 'smooth' }), 100);
+        }
       }
     };
 
-    window.addEventListener('hashchange', checkRoute);
-    window.addEventListener('popstate', checkRoute);
+    window.addEventListener('popstate', handleRouteSync);
+    window.addEventListener('hashchange', handleRouteSync);
     return () => {
-      window.removeEventListener('hashchange', checkRoute);
-      window.removeEventListener('popstate', checkRoute);
+      window.removeEventListener('popstate', handleRouteSync);
+      window.removeEventListener('hashchange', handleRouteSync);
     };
-  }, [currentView]);
+  }, []);
+
+  // Programmatic client-side navigation
+  const handleNavigate = (toUrl) => {
+    if (!toUrl) return;
+
+    // Admin routing
+    if (toUrl === '/admin' || toUrl === '#admin') {
+      window.location.hash = '#admin';
+      setIsAdminView(true);
+      window.scrollTo(0, 0);
+      return;
+    }
+
+    // Anchor on current page
+    if (toUrl.startsWith('#')) {
+      const targetId = toUrl.substring(1);
+      const el = document.getElementById(targetId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
+      return;
+    }
+
+    // Path navigation (with optional hash)
+    const [pathPart, hashPart] = toUrl.split('#');
+    const cleanPath = (pathPart || '/').toLowerCase().replace(/\/$/, '') || '/';
+
+    if (window.location.pathname !== cleanPath) {
+      window.history.pushState(null, '', toUrl);
+    }
+
+    setCurrentPath(cleanPath);
+    setIsAdminView(false);
+
+    if (cleanPath === '/book-appointment') {
+      setIsBookingOpen(true);
+    }
+
+    if (hashPart) {
+      setTimeout(() => {
+        const el = document.getElementById(hashPart);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    } else {
+      window.scrollTo(0, 0);
+    }
+  };
 
   const handleBackToSite = () => {
     if (window.location.hash.toLowerCase() === '#admin') {
@@ -61,12 +127,27 @@ function GarageWebsiteApp() {
     if (window.location.pathname.toLowerCase().replace(/\/$/, '') === '/admin') {
       window.history.pushState(null, '', '/');
     }
-    setCurrentView('site');
+    setIsAdminView(false);
+    setCurrentPath('/');
     window.scrollTo(0, 0);
   };
 
+  const handleOpenBooking = (service = null) => {
+    setSelectedService(service);
+    setIsBookingOpen(true);
+  };
+
+  const handleCloseBooking = () => {
+    setIsBookingOpen(false);
+    setSelectedService(null);
+    if (currentPath === '/book-appointment') {
+      window.history.replaceState(null, '', '/');
+      setCurrentPath('/');
+    }
+  };
+
   // If in admin mode: show loading, AdminLogin, or AdminDashboard
-  if (currentView === 'admin') {
+  if (isAdminView) {
     const adminLoadingSpinner = (
       <div style={{
         minHeight: '100vh',
@@ -108,53 +189,108 @@ function GarageWebsiteApp() {
     );
   }
 
-  const handleOpenBooking = (service = null) => {
-    setSelectedService(service);
-    setIsBookingOpen(true);
-  };
+  // Determine which page component to render based on current clean path
+  const renderCurrentPage = () => {
+    // Dedicated Service Pages
+    const dedicatedSlug = currentPath.replace('/', '');
+    if (DEDICATED_SERVICES[dedicatedSlug]) {
+      return (
+        <Suspense fallback={<div className="page-load-placeholder" />}>
+          <ServiceDetailPage 
+            service={DEDICATED_SERVICES[dedicatedSlug]} 
+            onOpenBooking={handleOpenBooking} 
+            onNavigate={handleNavigate}
+          />
+        </Suspense>
+      );
+    }
 
-  const handleCloseBooking = () => {
-    setIsBookingOpen(false);
-    setSelectedService(null);
+    switch (currentPath) {
+      case '/':
+      case '/book-appointment':
+        return (
+          <HomePage 
+            onOpenBooking={handleOpenBooking} 
+            onOpenVideo={() => setIsVideoOpen(true)} 
+            onNavigate={handleNavigate}
+          />
+        );
+
+      case '/services':
+        return (
+          <Suspense fallback={<div className="page-load-placeholder" />}>
+            <ServicesPage 
+              onOpenBooking={handleOpenBooking} 
+              onNavigate={handleNavigate} 
+            />
+          </Suspense>
+        );
+
+      case '/about':
+        return (
+          <Suspense fallback={<div className="page-load-placeholder" />}>
+            <AboutPage 
+              onOpenBooking={handleOpenBooking} 
+              onNavigate={handleNavigate} 
+            />
+          </Suspense>
+        );
+
+      case '/contact':
+        return (
+          <Suspense fallback={<div className="page-load-placeholder" />}>
+            <ContactPage 
+              onOpenBooking={handleOpenBooking} 
+              onNavigate={handleNavigate} 
+            />
+          </Suspense>
+        );
+
+      case '/gallery':
+        return (
+          <Suspense fallback={<div className="page-load-placeholder" />}>
+            <GalleryPage 
+              onOpenBooking={handleOpenBooking} 
+              onNavigate={handleNavigate} 
+            />
+          </Suspense>
+        );
+
+      case '/reviews':
+      case '/happy-customers':
+        return (
+          <Suspense fallback={<div className="page-load-placeholder" />}>
+            <ReviewsPage 
+              onOpenBooking={handleOpenBooking} 
+              onNavigate={handleNavigate} 
+            />
+          </Suspense>
+        );
+
+      default:
+        return (
+          <Suspense fallback={<div className="page-load-placeholder" />}>
+            <NotFoundPage 
+              onOpenBooking={handleOpenBooking} 
+              onNavigate={handleNavigate} 
+            />
+          </Suspense>
+        );
+    }
   };
 
   return (
     <div className="garage-app">
       {/* Top Navbar */}
-      <Navbar onOpenBooking={() => handleOpenBooking()} />
+      <Navbar onOpenBooking={() => handleOpenBooking()} onNavigate={handleNavigate} />
 
       {/* Main Landmark: Primary Website Content */}
       <main id="main-content" className="main-content" tabIndex="-1">
-        {/* Static Professional Hero Section */}
-        <HeroSection onOpenBooking={() => handleOpenBooking()} />
-
-        {/* Trust & Performance Metrics Bar */}
-        <StatsBar />
-
-        {/* Services Carousel: Slow auto-scroll with manual swipe */}
-        <ServicesSection onSelectService={(svc) => handleOpenBooking(svc)} />
-
-        {/* Car Brands Carousel: Continuous scrolling and manual swipe */}
-        <CarBrandsSection />
-
-        {/* Why Choose Us & Video Showcase */}
-        <WhyChooseUs onOpenVideo={() => setIsVideoOpen(true)} />
-
-        {/* Gallery Carousel: Manual swipe with optional auto-scroll */}
-        <GalleryCarousel />
-
-        {/* Customer Reviews: Changes every 4-5 seconds */}
-        <TestimonialsSection />
-
-        {/* Connect With Us Section */}
-        <ConnectWithUsSection />
-
-        {/* Pre-Footer Action Banner */}
-        <CtaBanner onOpenBooking={() => handleOpenBooking()} />
+        {renderCurrentPage()}
       </main>
 
       {/* Workshop Location, Timings & Footer */}
-      <Footer onOpenBooking={() => handleOpenBooking()} />
+      <Footer onOpenBooking={() => handleOpenBooking()} onNavigate={handleNavigate} />
 
       {/* Sticky High-Converting Bottom Action Bar */}
       <BottomBar />
